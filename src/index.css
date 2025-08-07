@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  @apply text-[1rem] h-[100vh] !scroll-auto;
+}
+
+body {
+  @apply font-["Inter"] h-[100vh] transition-all duration-[0.3s];
+  padding: 0px;
+  margin: 0px;
+}
+
+#root {
+  @apply overflow-x-hidden;
+}
+
+.button {
+  @apply rounded-[5px] backdrop-blur-[1px] box-border text-[#fff] cursor-pointer text-center font-["Roboto"] text-[1rem] tracking-[-0.5px] h-[40px] list-none outline-none p-[14px_42px] relative no-underline transition-colors duration-[100ms] align-baseline select-none touch-manipulation;
+  line-height: 14px;
+}
+
+.email__t {
+  @apply pl-[20px];
+}
+
+.swiper-pagination-bullet {
+  background-color: #c6bcb2 !important;
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.cart-icon {
+  position: relative;
+  z-index: 5;
+}
+
+.cart-icon:after {
+  content: "0";
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 20;
+}
