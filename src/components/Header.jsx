@@ -19,15 +19,6 @@ const Header = () => {
     { id: 6, link: "Аксессуары", href: "#aksessuary" },
   ];
 
-  const handleDesktopLinkClick = (e, href) => {
-    e.preventDefault();
-    // скролл до якоря (опционально)
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <header>
       <div className="w-full bg-[#F3F5F7]">
