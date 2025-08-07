@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  base: mode === "development" ? "/" : "/mixersstore/",
+  base: "/mixersstore/",
   build: {
     chunkSizeWarningLimit: 1000, // или любое другое значение в KB
   },
