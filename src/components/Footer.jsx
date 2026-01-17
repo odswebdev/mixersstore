@@ -139,7 +139,7 @@ const Footer = () => {
               <div className="flex flex-col gap-[15px]">
                 <a
                   className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
-                  href="/mixersstore/actions"
+                  href="/mixersstore/promotions"
                 >
                   Акции
                 </a>
