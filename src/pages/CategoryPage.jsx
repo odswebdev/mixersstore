@@ -122,7 +122,7 @@ const CategoryPage = ({ title, category }) => {
             {title}
           </h1>
 
-          <div className="grid grid-cols-[25%_70%] gap-[65px] mb-[80px]">
+          <div className="grid lg:grid-cols-[25%_70%] gap-[65px] mb-[80px]">
             {/* Передаем фильтры и сеттеры */}
             <SidebarCatalog
               className="w-full"
