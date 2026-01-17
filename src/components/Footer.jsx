@@ -139,31 +139,31 @@ const Footer = () => {
               <div className="flex flex-col gap-[15px]">
                 <a
                   className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
-                  href="/actions"
+                  href="/mixersstore/actions"
                 >
                   Акции
                 </a>
                 <a
                   className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
-                  href="/about"
+                  href="/mixersstore/about"
                 >
                   О компании
                 </a>
                 <a
                   className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
-                  href="/pay"
+                  href="/mixersstore/pay"
                 >
                   Оплата и доставка
                 </a>
                 <a
                   className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
-                  href="/stores"
+                  href="/mixersstore/stores"
                 >
                   Магазины
                 </a>
                 <a
                   className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
-                  href="/contacts"
+                  href="/mixersstore/contacts"
                 >
                   Контакты
                 </a>
@@ -227,13 +227,13 @@ const Footer = () => {
               &copy; DEMM RUBINETTERIA 2025
             </div>
             <Link
-              to="/offer"
+              to="/mixersstore/offer"
               className="text-[15px] text-[#7F8295] mr-[75px] no-underline"
             >
               Договор оферты
             </Link>
             <Link
-              to="/soglasie"
+              to="/mixersstore/soglasie"
               className="text-[15px] text-[#7F8295] no-underline"
             >
               Пользовательское соглашение

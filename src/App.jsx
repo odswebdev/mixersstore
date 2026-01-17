@@ -25,7 +25,7 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={<AccountPage />} />
-      <Route path="/mixersstore/" element={<Home />} />
+      <Route path="/" element={<Home />} />
       <Route path="/catalog" element={<Catalog />} />
       <Route path="/cart" element={<CartPage />} />
       <Route path="/soglasie" element={<UserAgreement />} />

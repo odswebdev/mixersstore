@@ -276,7 +276,7 @@ const Home = () => {
                 Актуальные акции
               </div>
               <Link
-                to="/promotions"
+                to="/mixersstore/promotions/"
                 className="flex justify-center items-center border-none rounded-[50px] text-[14px] text-[#fff] font-medium p-[25px_17px] lg:p-[20px_30px] w-[142px] h-[60px] bg-[#213f74] hover:bg-[#c19999] cursor-pointer"
               >
                 <span>Все акции</span>
@@ -313,7 +313,7 @@ const Home = () => {
                   </div>
                   <a
                     className="text-[14px] lg:text-[16px] font-[600] text-[#213f74] no-underline"
-                    href="/promotions/promo1"
+                    href="/mixersstore/promotions/promo1"
                   >
                     Подробнее
                   </a>
@@ -342,7 +342,7 @@ const Home = () => {
                   </div>
                   <a
                     className="text-[16px] font-[600] text-[#213f74] no-underline"
-                    href="/promotions/promo2"
+                    href="/mixersstore/promotions/promo2"
                   >
                     Подробнее
                   </a>
@@ -372,7 +372,7 @@ const Home = () => {
                   </div>
                   <a
                     className="text-[16px] font-[600] text-[#213f74] no-underline"
-                    href="/promotions/promo3"
+                    href="/mixersstore/promotions/promo3"
                   >
                     Подробнее
                   </a>
@@ -428,7 +428,7 @@ const Home = () => {
                 сотрудничеству!
               </p>
               <a
-                href="/about"
+                href="/mixersstore/about"
                 className="flex justify-center items-center border-none rounded-[50px] text-[14px] text-[#fff] font-medium p-[25px_17px] lg:p-[14_28px] w-[170px] h-[50px] bg-[#213f74] no-underline cursor-pointer hover:bg-[#c19999]"
               >
                 Подробнее
