@@ -111,7 +111,7 @@ const Home = () => {
 
                     <Link
                       to="/catalog"
-                      className="group inline-block text-[14px] lg:text-[16px] text-[#c6bcb2] font-[600] mb-4 no-underline hover:underline"
+                      className="group inline-block text-[14px] lg:text-[16px] text-[#FFF] font-[600] mb-4 no-underline hover:underline"
                     >
                       Перейти в каталог
                     </Link>

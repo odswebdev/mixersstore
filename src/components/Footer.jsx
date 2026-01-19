@@ -97,7 +97,7 @@ const Footer = () => {
               </div>
               <div className="flex flex-col gap-[15px]">
                 <Link
-                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
+                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
                   to="/catalog/mixers"
                   onClick={() =>
                     window.scrollTo({ top: 0, behavior: "smooth" })
@@ -106,25 +106,25 @@ const Footer = () => {
                   Смесители
                 </Link>
                 <a
-                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
+                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
                   href="#"
                 >
                   Душевые системы
                 </a>
                 <a
-                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
+                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
                   href="#"
                 >
                   Душевые стойки
                 </a>
                 <a
-                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
+                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
                   href="#"
                 >
                   Изливы
                 </a>
                 <a
-                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
+                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
                   href="#"
                 >
                   Аксессуары
@@ -138,31 +138,31 @@ const Footer = () => {
               </div>
               <div className="flex flex-col gap-[15px]">
                 <a
-                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
+                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
                   href="/mixersstore/promotions"
                 >
                   Акции
                 </a>
                 <a
-                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
+                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
                   href="/mixersstore/about"
                 >
                   О компании
                 </a>
                 <a
-                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
+                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
                   href="/mixersstore/pay"
                 >
                   Оплата и доставка
                 </a>
                 <a
-                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
+                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
                   href="/mixersstore/stores"
                 >
                   Магазины
                 </a>
                 <a
-                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline"
+                  className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
                   href="/mixersstore/contacts"
                 >
                   Контакты
