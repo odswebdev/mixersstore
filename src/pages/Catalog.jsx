@@ -132,7 +132,6 @@ const Catalog = () => {
           </h1>
 
           {/* Категории */}
-
           <div className="flex flex-col lg:flex-row justify-between gap-[20px] items-center mb-[25px] lg:mb-[40px]">
             {catalogCategories.map((cat) => (
               <Link
@@ -186,7 +185,6 @@ const Catalog = () => {
             <div className="flex flex-col w-full">
               <div className="flex justify-between items-center flex-wrap mb-[25px]">
                 {/* Левая часть: категории */}
-
                 <div className="flex flex-wrap gap-[10px] grow min-w-0">
                   {categories.map((cat) => (
                     <motion.button
@@ -324,7 +322,11 @@ const Catalog = () => {
                                 transition={{ duration: 0.25 }}
                                 className="bg-[#213F74] text-[#FFF] text-[14px] font-[500] w-full h-[50px] rounded-[50px] cursor-pointer"
                                 whileTap={{ scale: 0.9 }}
-                                onClick={() => addToCart(product)}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  addToCart(product);
+                                }}
                               >
                                 В корзину
                               </motion.button>
@@ -340,11 +342,13 @@ const Catalog = () => {
                                 <motion.button
                                   className="bg-gray-200 text-[#213F74] px-3 py-1 rounded-full"
                                   whileTap={{ scale: 0.8 }}
-                                  onClick={() =>
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
                                     inCart.quantity === 1
                                       ? removeFromCart(product.id)
-                                      : updateQuantity(product.id, -1)
-                                  }
+                                      : updateQuantity(product.id, -1);
+                                  }}
                                 >
                                   -
                                 </motion.button>
@@ -354,7 +358,11 @@ const Catalog = () => {
                                 <motion.button
                                   className="bg-gray-200 text-[#213F74] px-3 py-1 rounded-full"
                                   whileTap={{ scale: 0.8 }}
-                                  onClick={() => updateQuantity(product.id, 1)}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    updateQuantity(product.id, 1);
+                                  }}
                                 >
                                   +
                                 </motion.button>
@@ -371,7 +379,9 @@ const Catalog = () => {
                             transition={{ duration: 0.25 }}
                             className="bg-[#F3F5F7] text-[14px] font-[500] text-[#213F74] w-full h-[50px] border-none rounded-[50px] cursor-pointer"
                             whileTap={{ scale: 0.9 }}
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
                               setSelectedProduct(product); // сохраняем выбранный товар
                               setModalOpen(true); // открываем модалку
                             }}
@@ -386,15 +396,6 @@ const Catalog = () => {
                   <p className="text-gray-500">Нет товаров по фильтрам</p>
                 )}
               </div>
-
-              {selectedProduct && (
-                <OneClickBuy
-                  productId={selectedProduct.id}
-                  productName={selectedProduct.name}
-                  isOpen={modalOpen}
-                  onClose={() => setModalOpen(false)}
-                />
-              )}
 
               {/* Пагинация */}
               <div className="flex justify-center items-center gap-3 mt-6">
@@ -435,6 +436,19 @@ const Catalog = () => {
         </div>
         <Footer />
       </div>
+
+      {/* Модальное окно "Купить в 1 клик" - теперь ВНЕ основного контента */}
+      {modalOpen && selectedProduct && (
+        <OneClickBuy
+          productId={selectedProduct.id}
+          productName={selectedProduct.name}
+          isOpen={modalOpen}
+          onClose={() => {
+            setModalOpen(false);
+            setSelectedProduct(null);
+          }}
+        />
+      )}
     </div>
   );
 };

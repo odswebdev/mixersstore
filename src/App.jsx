@@ -43,6 +43,7 @@ function App() {
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/pay" element={<PaymentPage />} />
       <Route path="/paydelivery" element={<PaymentDelivery />} />
+      <Route path="/oneclickbuy" element={<OneClickBuy />} />
       <Route
         path="/catalog/mixers"
         element={<CategoryPage title="Смесители" category="Смесители" />}
