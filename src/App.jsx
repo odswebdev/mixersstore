@@ -20,7 +20,8 @@ import PaymentPage from "./pages/PaymentPage";
 import NotFound from "./pages/NotFound";
 import CategoryPage from "./pages/CategoryPage";
 import SearchPage from "./pages/SearchPage";
-import PaymentDelivery from "./pages/SearchPage";
+import PaymentDelivery from "./pages/PaymentDelivery";
+import OneClickBuy from "./pages/OneClickBuy";
 
 function App() {
   return (
