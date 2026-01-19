@@ -21,7 +21,6 @@ import NotFound from "./pages/NotFound";
 import CategoryPage from "./pages/CategoryPage";
 import SearchPage from "./pages/SearchPage";
 import PaymentDelivery from "./pages/PaymentDelivery";
-import OneClickBuy from "./pages/OneClickBuy";
 
 function App() {
   return (
@@ -45,7 +44,6 @@ function App() {
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/pay" element={<PaymentPage />} />
       <Route path="/paydelivery" element={<PaymentDelivery />} />
-      <Route path="/oneclickbuy" element={<OneClickBuy />} />
       <Route
         path="/catalog/mixers"
         element={<CategoryPage title="Смесители" category="Смесители" />}
