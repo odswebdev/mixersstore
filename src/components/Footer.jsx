@@ -151,7 +151,7 @@ const Footer = () => {
                 </a>
                 <a
                   className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
-                  href="/mixersstore/pay"
+                  href="/mixersstore/paydelivery"
                 >
                   Оплата и доставка
                 </a>

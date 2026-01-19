@@ -16,6 +16,7 @@ const Header = () => {
   const [focused, setFocused] = useState(false);
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cartItemsCount, setCartItemsCount] = useState(3); // Пример количества товаров
 
   const products2 = [
     { id: 1, name: "Смеситель LUX", price: "5000₽" },
@@ -29,7 +30,7 @@ const Header = () => {
 
   const links = [
     { id: 1, link: "О компании", href: "/about" },
-    { id: 2, link: "Оплата и доставка", href: "/pay" },
+    { id: 2, link: "Оплата и доставка", href: "/paydelivery" },
     { id: 3, link: "Магазины", href: "/stores" },
     { id: 4, link: "Контакты", href: "/contacts" },
   ];
@@ -46,9 +47,23 @@ const Header = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+
+  // Блокировка скролла при открытом мобильном меню
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     if (query.trim() === "") {
@@ -73,6 +88,9 @@ const Header = () => {
         !inputRef.current.contains(event.target)
       ) {
         setDropdownOpen(false);
+        if (window.innerWidth < 1024) {
+          setIsSearchVisible(false);
+        }
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -82,6 +100,18 @@ const Header = () => {
   const handleSearch = () => {
     navigate(`/search?query=${query}`);
     setDropdownOpen(false);
+    if (window.innerWidth < 1024) {
+      setIsSearchVisible(false);
+    }
+  };
+
+  const toggleSearch = () => {
+    setIsSearchVisible(!isSearchVisible);
+    if (!isSearchVisible) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    }
   };
 
   const handleChange = (e) => {
@@ -119,31 +149,6 @@ const Header = () => {
     }, 3000);
   };
 
-  /*  export function useBodyScrollLock(isLocked) {
-    useEffect(() => {
-      const body = document.body;
-
-      if (isLocked) {
-        const scrollY = window.scrollY;
-        body.style.position = "fixed";
-        body.style.top = `-${scrollY}px`;
-        body.style.left = "0";
-        body.style.right = "0";
-        body.style.overflow = "hidden";
-        body.style.width = "100%";
-      } else {
-        const scrollY = body.style.top;
-        body.style.position = "";
-        body.style.top = "";
-        body.style.overflow = "";
-        body.style.width = "";
-        window.scrollTo(0, parseInt(scrollY || "0") * -1); // возвращаем на то же место
-      }
-    }, [isLocked]);
-  }
-
-  useLockBodyScroll(isPopupOpen); */
-
   return (
     <header className="relative">
       <div className="w-full bg-[#F3F5F7]">
@@ -156,7 +161,6 @@ const Header = () => {
                     <Link
                       className="text-[15px] text-[#00072D] no-underline hover:text-[#002D79]"
                       to={href}
-                      /*  onClick={(e) => handleDesktopLinkClick(e, href)} */
                     >
                       {link}
                     </Link>
@@ -196,27 +200,16 @@ const Header = () => {
           </div>
         </div>
         <div className="bg-[#fff] w-full">
-          <div className="max-w-[1300px] mx-auto px-4 flex flex-row justify-between items-center">
-            <div className="w-[138px] pt-[10px] pb-[10px]">
+          <div className="max-w-[1300px] mx-auto px-4 flex flex-row justify-between items-center py-2 lg:py-0">
+            {/* Логотип - 1 */}
+            <div className="w-[100px] lg:w-[138px]">
               <Link to="/">
-                <img className="navbar__logo-img" src={logo} alt="" />
+                <img className="w-full h-auto" src={logo} alt="Логотип" />
               </Link>
             </div>
 
-            {/* Кнопка-бургер для мобилы */}
-            <div className="lg:hidden">
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="flex flex-col gap-[5px] w-[30px]"
-              >
-                <span className="w-full h-[3px] bg-[#213f74] rounded"></span>
-                <span className="w-full h-[3px] bg-[#213f74] rounded"></span>
-                <span className="w-full h-[3px] bg-[#213f74] rounded"></span>
-              </button>
-            </div>
-
-            {/* Поиск */}
-            <div className="relative w-[686px]">
+            {/* Поиск - 2 (на мобиле появляется при нажатии на иконку) */}
+            <div className="hidden lg:block relative flex-1 max-w-[686px] mx-4">
               <input
                 ref={inputRef}
                 type="text"
@@ -231,74 +224,257 @@ const Header = () => {
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-[#213F74]"
               >
                 <svg
-                  className="absolute cursor-pointer right-[1rem] top-1/2 transform -translate-y-1/2"
                   width="24"
                   height="24"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  {" "}
                   <path
                     d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
                     stroke="#213F74"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  />{" "}
+                  />
                   <path
                     d="M21.0004 21L16.6504 16.65"
                     stroke="#213F74"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                  />{" "}
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Мобильный поиск (появляется при нажатии на иконку) */}
+            <AnimatePresence>
+              {isSearchVisible && (
+                <motion.div
+                  className="lg:hidden absolute top-0 left-0 right-0 bg-white z-40 px-4 py-3 shadow-md"
+                  initial={{ y: -100, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -100, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="relative">
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      placeholder="Поиск по сайту"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      className="w-full h-[45px] px-4 pr-12 rounded-full border border-[#e5e9ec] focus:outline-none"
+                    />
+                    <button
+                      onClick={() => {
+                        handleSearch();
+                        setIsSearchVisible(false);
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                    >
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
+                          stroke="#213F74"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M21.0004 21L16.6504 16.65"
+                          stroke="#213F74"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Выпадающий список поиска (для десктопа) */}
+            <div
+              ref={dropdownRef}
+              className={`absolute top-[55px] left-1/2 transform -translate-x-1/2 w-[686px] max-h-[390px] overflow-y-auto bg-white shadow-2xl rounded-lg transition-all duration-300 ease-in-out z-50 ${
+                dropdownOpen && window.innerWidth >= 1024
+                  ? "opacity-100 visible translate-y-0"
+                  : "opacity-0 invisible -translate-y-2"
+              }`}
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "#cbd5e1 transparent",
+              }}
+            >
+              {results.length === 0 ? (
+                <div className="p-4 text-gray-500">Ничего не найдено</div>
+              ) : (
+                results.map((product) => (
+                  <Link
+                    key={product.id}
+                    to={`/product/${product.id}`}
+                    className="block px-4 py-3 hover:bg-gray-100 transition"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    <div className="flex justify-between">
+                      <span>{product.name}</span>
+                      <span className="text-gray-600">{product.price}</span>
+                    </div>
+                  </Link>
+                ))
+              )}
+              {results.length > 0 && (
+                <div className="p-4 border-t border-gray-200">
+                  <button
+                    onClick={handleSearch}
+                    className="w-full py-2 bg-[#213F74] text-white rounded-full hover:bg-[#002D79] transition"
+                  >
+                    Все результаты
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Иконки для мобильной версии */}
+            <div className="flex lg:hidden items-center space-x-3">
+              {/* Иконка поиска */}
+              <button
+                onClick={toggleSearch}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F3F5F7] hover:bg-[#E8ECF0] transition-colors"
+                aria-label="Поиск"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
+                    stroke="#213F74"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M21.0004 21L16.6504 16.65"
+                    stroke="#213F74"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </button>
 
-              {/* Выпадающий список поверх меню */}
-              <div
-                ref={dropdownRef}
-                className={`absolute top-[55px] left-0 w-full max-h-[390px] overflow-y-auto bg-white shadow-2xl rounded-lg transition-all duration-300 ease-in-out ${
-                  dropdownOpen
-                    ? "opacity-100 visible translate-y-0"
-                    : "opacity-0 invisible -translate-y-2"
-                }`}
-                style={{
-                  scrollbarWidth: "thin",
-                  scrollbarColor: "#cbd5e1 transparent",
-                }}
+              {/* Иконка личного кабинета - 3 */}
+              <Link
+                to="/login"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F3F5F7] hover:bg-[#E8ECF0] transition-colors"
+                aria-label="Личный кабинет"
               >
-                {results.length === 0 ? (
-                  <div className="p-4 text-gray-500">Ничего не найдено</div>
-                ) : (
-                  results.map((product) => (
-                    <Link
-                      key={product.id}
-                      to={`/product/${product.id}`}
-                      className="block px-4 py-3 hover:bg-gray-100 transition"
-                      onClick={() => setDropdownOpen(false)}
-                    >
-                      <div className="flex justify-between">
-                        <span>{product.name}</span>
-                        <span className="text-gray-600">{product.price}</span>
-                      </div>
-                    </Link>
-                  ))
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 22 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18.3346 19.25V17.4167C18.3346 16.4442 17.9483 15.5116 17.2607 14.8239C16.5731 14.1363 15.6404 13.75 14.668 13.75H7.33464C6.36217 13.75 5.42954 14.1363 4.74191 14.8239C4.05428 15.5116 3.66797 16.4442 3.66797 17.4167V19.25"
+                    stroke="#213F74"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M10.9987 10.0833C13.0237 10.0833 14.6654 8.44171 14.6654 6.41667C14.6654 4.39162 13.0237 2.75 10.9987 2.75C8.97365 2.75 7.33203 4.39162 7.33203 6.41667C7.33203 8.44171 8.97365 10.0833 10.9987 10.0833Z"
+                    stroke="#213F74"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </Link>
+
+              {/* Иконка корзины с количеством - 4 */}
+              <Link
+                to="/cart"
+                className="relative w-10 h-10 flex items-center justify-center rounded-full bg-[#F3F5F7] hover:bg-[#E8ECF0] transition-colors"
+                aria-label="Корзина"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 2L3 6V20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C19.5304 22 20.0391 21.7893 20.4142 21.4142C20.7893 21.0391 21 20.5304 21 20V6L18 2H6Z"
+                    stroke="#213F74"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M3 6H21"
+                    stroke="#213F74"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16 10C16 11.0609 15.5786 12.0783 14.8284 12.8284C14.0783 13.5786 13.0609 14 12 14C10.9391 14 9.92172 13.5786 9.17157 12.8284C8.42143 12.0783 8 11.0609 8 10"
+                    stroke="#213F74"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                {cartItemsCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-[#FF4444] text-white text-xs font-bold rounded-full">
+                    {cartItemsCount > 9 ? "9+" : cartItemsCount}
+                  </span>
                 )}
-                {results.length > 0 && (
-                  <div className="p-4 border-t border-gray-200">
-                    <button
-                      onClick={handleSearch}
-                      className="w-full py-2 bg-[#213F74] text-white rounded-full hover:bg-[#002D79] transition"
-                    >
-                      Все результаты
-                    </button>
-                  </div>
-                )}
-              </div>
+              </Link>
+
+              {/* Иконка гамбургер меню в синем кружке - 5 */}
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-[#213F74] hover:bg-[#002D79] transition-colors relative z-50"
+                aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
+              >
+                <div className="flex flex-col items-center justify-center w-5 h-5">
+                  <span
+                    className={`block w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
+                      menuOpen ? "rotate-45 translate-y-1" : "-translate-y-1"
+                    }`}
+                  ></span>
+                  <span
+                    className={`block w-full h-0.5 bg-white rounded-full transition-all duration-300 mt-1 ${
+                      menuOpen ? "opacity-0" : ""
+                    }`}
+                  ></span>
+                  <span
+                    className={`block w-full h-0.5 bg-white rounded-full transition-all duration-300 mt-1 ${
+                      menuOpen ? "-rotate-45 -translate-y-1" : "translate-y-1"
+                    }`}
+                  ></span>
+                </div>
+              </button>
             </div>
 
+            {/* Десктопная версия: контакты и кнопка */}
             <div className="hidden lg:flex flex-col items-end justify-end">
               <span className="text-[22px] text-[#213F74] font-[600] text-right">
                 <a className="no-underline" href="tel:+79999999999">
@@ -343,7 +519,6 @@ const Header = () => {
                     <Link
                       className="text-[15px] font-[500] text-[#FFF] no-underline"
                       to={href}
-                      /*  onClick={(e) => handleDesktopLinkClick(e, href)} */
                     >
                       {link}
                     </Link>
@@ -359,24 +534,195 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Выпадающее меню (мобилка) */}
+      {/* Затемненный фон при открытом мобильном меню */}
       {menuOpen && (
-        <div className="lg:hidden bg-white shadow-md absolute top-[70px] left-0 w-full p-4">
-          <ul className="flex flex-col gap-4">
-            {links.concat(links2).map(({ id, link, href }) => (
-              <li key={id}>
+        <div 
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
+
+      {/* Выпадающее меню (мобилка) - слева на половину экрана */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            className="lg:hidden fixed top-0 left-0 h-full w-3/4 max-w-[320px] bg-white shadow-lg z-50 overflow-y-auto"
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <div className="p-6">
+              <div className="mb-8">
+                <Link to="/" onClick={() => setMenuOpen(false)}>
+                  <img className="w-32" src={logo} alt="Логотип" />
+                </Link>
+              </div>
+
+              {/* Контакты в мобильном меню */}
+              <div className="mb-8">
+                <div className="flex items-center mb-4">
+                  <svg
+                    className="mr-2"
+                    width="6"
+                    height="6"
+                    viewBox="0 0 6 6"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="3" cy="3" r="3" fill="#00DE59" />
+                  </svg>
+                  <span className="text-[14px] text-[#00072D]">
+                    Звоните с 8:10 до 18:10
+                  </span>
+                </div>
+                <a 
+                  href="tel:+79999999999" 
+                  className="text-[18px] text-[#213F74] font-[600] no-underline block mb-4"
+                >
+                  +7 999 999-99-99
+                </a>
+                <button
+                  onClick={() => {
+                    setIsPopupOpen(true);
+                    setMenuOpen(false);
+                  }}
+                  className="w-full rounded-[50px] text-[14px] text-white font-medium py-3 bg-[#213f74] hover:bg-[#002D79] cursor-pointer"
+                >
+                  Заказать звонок
+                </button>
+              </div>
+
+              {/* Основные ссылки */}
+              <div className="mb-8">
+                <h3 className="text-[16px] font-semibold text-[#213F74] mb-4">
+                  О компании
+                </h3>
+                <ul className="space-y-3">
+                  {links.map(({ id, link, href }) => (
+                    <li key={id}>
+                      <Link
+                        className="block text-[15px] text-[#00072D] no-underline hover:text-[#213F74] py-1"
+                        to={href}
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        {link}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Каталог */}
+              <div className="mb-8">
+                <h3 className="text-[16px] font-semibold text-[#213F74] mb-4">
+                  Каталог
+                </h3>
+                <ul className="space-y-3">
+                  {links2.map(({ id, link, href }) => (
+                    <li key={id}>
+                      <Link
+                        className="block text-[15px] text-[#00072D] no-underline hover:text-[#213F74] py-1"
+                        to={href}
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        {link}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Личный кабинет */}
+              <div className="pt-6 border-t border-gray-200">
                 <Link
-                  className="block text-[16px] text-[#213f74] no-underline"
-                  to={href}
+                  to="/login"
+                  className="flex items-center text-[15px] text-[#213f74] font-medium no-underline"
                   onClick={() => setMenuOpen(false)}
                 >
-                  {link}
+                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#F3F5F7] mr-3">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 22 22"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18.3346 19.25V17.4167C18.3346 16.4442 17.9483 15.5116 17.2607 14.8239C16.5731 14.1363 15.6404 13.75 14.668 13.75H7.33464C6.36217 13.75 5.42954 14.1363 4.74191 14.8239C4.05428 15.5116 3.66797 16.4442 3.66797 17.4167V19.25"
+                        stroke="#213F74"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M10.9987 10.0833C13.0237 10.0833 14.6654 8.44171 14.6654 6.41667C14.6654 4.39162 13.0237 2.75 10.9987 2.75C8.97365 2.75 7.33203 4.39162 7.33203 6.41667C7.33203 8.44171 8.97365 10.0833 10.9987 10.0833Z"
+                        stroke="#213F74"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                  Личный кабинет
                 </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+              </div>
+
+              {/* Корзина в мобильном меню */}
+              <div className="pt-6 mt-6 border-t border-gray-200">
+                <Link
+                  to="/cart"
+                  className="flex items-center text-[15px] text-[#213f74] font-medium no-underline"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <div className="relative w-8 h-8 flex items-center justify-center rounded-full bg-[#F3F5F7] mr-3">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M6 2L3 6V20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C19.5304 22 20.0391 21.7893 20.4142 21.4142C20.7893 21.0391 21 20.5304 21 20V6L18 2H6Z"
+                        stroke="#213F74"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M3 6H21"
+                        stroke="#213F74"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M16 10C16 11.0609 15.5786 12.0783 14.8284 12.8284C14.0783 13.5786 13.0609 14 12 14C10.9391 14 9.92172 13.5786 9.17157 12.8284C8.42143 12.0783 8 11.0609 8 10"
+                        stroke="#213F74"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    {cartItemsCount > 0 && (
+                      <span className="absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center bg-[#FF4444] text-white text-[10px] font-bold rounded-full">
+                        {cartItemsCount > 9 ? "9+" : cartItemsCount}
+                      </span>
+                    )}
+                  </div>
+                  Корзина
+                  {cartItemsCount > 0 && (
+                    <span className="ml-auto text-[#213F74] font-medium">
+                      {cartItemsCount} товара
+                    </span>
+                  )}
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Popup */}
       <AnimatePresence>
