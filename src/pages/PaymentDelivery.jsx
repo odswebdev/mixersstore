@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 import Breadcrumb from "../components/Breadcrumb";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import deliveryImage from "../assets/delivery-image.jpg"; // Замените на ваше изображение
-import paymentIcon from "../assets/payment-icon.svg"; // Иконки для наглядности
-import deliveryIcon from "../assets/delivery-icon.svg";
+//import deliveryImage from "../assets/delivery-image.jpg";
+//import paymentIcon from "../assets/payment-icon.svg";
+//import deliveryIcon from "../assets/delivery-icon.svg";
 
 const PaymentDelivery = () => {
   return (
@@ -50,7 +50,6 @@ const PaymentDelivery = () => {
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <div className="flex items-center mb-4">
-                  <img src={paymentIcon} alt="Оплата" className="w-8 h-8 mr-3" />
                   <h2 className="text-2xl font-semibold text-[#122952]">
                     Способы оплаты
                   </h2>
@@ -80,7 +79,6 @@ const PaymentDelivery = () => {
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <div className="flex items-center mb-4">
-                  <img src={deliveryIcon} alt="Доставка" className="w-8 h-8 mr-3" />
                   <h2 className="text-2xl font-semibold text-[#122952]">
                     Варианты доставки
                   </h2>
@@ -116,11 +114,7 @@ const PaymentDelivery = () => {
             transition={{ delay: 0.6, duration: 0.7 }}
           >
             <div className="lg:w-1/2">
-              <img 
-                src={deliveryImage} 
-                alt="Доставка товаров" 
-                className="w-full h-auto rounded-lg shadow-md"
-              />
+             
             </div>
 
             <div className="lg:w-1/2">
