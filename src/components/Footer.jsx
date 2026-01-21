@@ -457,7 +457,7 @@ const Footer = () => {
               </Link>
             </div>
             <div className="text-[14px] text-[#7F8295]">
-              &copy; DEMM RUBINETTERIA 2025
+              &copy; DEMM RUBINETTERIA 2025-2026
             </div>
           </div>
         </div>
