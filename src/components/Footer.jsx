@@ -420,7 +420,7 @@ const Footer = () => {
           {/* Десктопная версия (3 колонки) */}
           <div className="hidden md:flex flex-row justify-between items-center">
             <div className="text-[15px] text-[#7F8295] w-1/4">
-              &copy; DEMM RUBINETTERIA 2025
+              &copy; DEMM RUBINETTERIA 2025-2026
             </div>
             <div className="text-[15px] text-[#7F8295] w-1/4 text-center">
               <Link
