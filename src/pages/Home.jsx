@@ -135,23 +135,15 @@ const Home = () => {
         <style>
           {`
       .swiper-pagination {
-      /*  text-align: right !important;
-        right: 20px;
-        left: auto !important;
-        bottom: 20px !important;
-        display: flex !important;
-        justify-content: flex-end;
-        gap: 10px;
-        padding-right: 20px; */
         text-align: left !important;
-  bottom: 50px !important;
-  display: flex !important;
-  gap: 10px;
-  padding-left: 300px;
-  width: 100% !important;
-  max-width: 600px;
-  align-items: center;
-  justify-content: center;
+        bottom: 50px !important;
+        display: flex !important;
+        gap: 10px;
+        padding-left: 300px;
+        width: 100% !important;
+        max-width: 600px;
+        align-items: center;
+        justify-content: center;
       }
 
       .swiper-pagination-bullet {
@@ -200,14 +192,23 @@ const Home = () => {
         animation: fadeInDesc 0.8s ease forwards;
         animation-delay: 0.6s;
       }
+
+      @media (max-width: 768px) {
+        .swiper-pagination {
+          padding-left: 20px;
+          justify-content: flex-start;
+        }
+      }
     `}
         </style>
       </section>
+      
+      {/* Секция категорий */}
       <section className="pt-[80px] overflow-hidden">
         <div className="max-w-[1300px] mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-9 auto-rows-[260px] gap-[24px]">
-            {/* Смесители — 2 колонки */}
-            <div className="col-span-4 lg:col-span-2 bg-[linear-gradient(180deg,rgba(44,53,70,0.1)_0%,rgba(31,44,73,0.9)_100%),url('./assets/smes.png')] bg-cover bg-center rounded-[10px] cursor-pointer hover:bg-[url('./assets/smes.png')] transition duration-300 hover:brightness-100">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-9 auto-rows-[260px] gap-[24px]">
+            {/* Смесители — на мобиле: 1 колонка, на планшете: 2 колонки, на десктопе: 2 колонки */}
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2 bg-[linear-gradient(180deg,rgba(44,53,70,0.1)_0%,rgba(31,44,73,0.9)_100%),url('./assets/smes.png')] bg-cover bg-center rounded-[10px] cursor-pointer hover:bg-[url('./assets/smes.png')] transition duration-300 hover:brightness-100">
               <div className="relative top-[75%] pb-[34px] pl-[30px] pr-[30px] flex justify-between items-center">
                 <div className="text-[16px] lg:text-[24px] text-[#fff] font-[500]">
                   Смесители
@@ -218,8 +219,8 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Душевые системы — 4 колонки */}
-            <div className="col-span-4 lg:col-span-4 bg-[linear-gradient(180deg,rgba(44,53,70,0.1)_0%,rgba(31,44,73,0.9)_100%),url('./assets/dush.png')] bg-cover bg-center rounded-[10px] cursor-pointer hover:bg-[linear-gradient(180deg,rgba(44,53,70,0.1)_0%,rgba(31,44,73,0.9)_100%),url('./assets/dush.png')] transition duration-300 hover:brightness-100">
+            {/* Душевые системы — на мобиле: 1 колонка, на планшете: 2 колонки, на десктопе: 4 колонки */}
+            <div className="col-span-1 sm:col-span-1 lg:col-span-4 bg-[linear-gradient(180deg,rgba(44,53,70,0.1)_0%,rgba(31,44,73,0.9)_100%),url('./assets/dush.png')] bg-cover bg-center rounded-[10px] cursor-pointer hover:bg-[linear-gradient(180deg,rgba(44,53,70,0.1)_0%,rgba(31,44,73,0.9)_100%),url('./assets/dush.png')] transition duration-300 hover:brightness-100">
               <div className="relative top-[75%] pb-[34px] pl-[30px] pr-[30px] flex justify-between items-center">
                 <div className="text-[16px] lg:text-[24px] text-[#fff] font-[500]">
                   Душевые системы
@@ -231,8 +232,9 @@ const Home = () => {
             </div>
 
             {/* Коллекции — справа на две строки */}
-            <div className="col-span-4 lg:col-span-3 row-span-2 bg-[linear-gradient(180deg,rgba(44,53,70,0.1)_0%,rgba(31,44,73,0.9)_100%),url('./assets/stoyki.png')] bg-cover bg-center rounded-[10px] cursor-pointer hover:[url('./assets/stoyki.png')]">
-              <div className="relative top-[30rem] pb-[30px] pl-[30px] pr-[30px] flex justify-between items-center">
+            {/* На мобиле: занимает всю ширину, высота стандартная */}
+            <div className="col-span-1 sm:col-span-2 lg:col-span-3 row-span-2 bg-[linear-gradient(180deg,rgba(44,53,70,0.1)_0%,rgba(31,44,73,0.9)_100%),url('./assets/stoyki.png')] bg-cover bg-center rounded-[10px] cursor-pointer hover:[url('./assets/stoyki.png')]">
+              <div className="relative top-[75%] sm:top-[75%] lg:top-[30rem] pb-[30px] pl-[30px] pr-[30px] flex justify-between items-center">
                 <div className="text-[16px] lg:text-[24px] text-[#fff] font-[500]">
                   Душевые стойки
                 </div>
@@ -242,8 +244,8 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Ванны — 4 колонки */}
-            <div className="col-span-4 lg:col-span-4 bg-[linear-gradient(180deg,rgba(44,53,70,0.1)_0%,rgba(31,44,73,0.9)_100%),url('./assets/izlivy.png')] bg-cover bg-center rounded-[10px] cursor-pointer hover:[url('./assets/izlivy.png')]">
+            {/* Ванны — на мобиле: 1 колонка, на планшете: 2 колонки, на десктопе: 4 колонки */}
+            <div className="col-span-1 sm:col-span-1 lg:col-span-4 bg-[linear-gradient(180deg,rgba(44,53,70,0.1)_0%,rgba(31,44,73,0.9)_100%),url('./assets/izlivy.png')] bg-cover bg-center rounded-[10px] cursor-pointer hover:[url('./assets/izlivy.png')]">
               <div className="relative top-[75%] pb-[34px] pl-[30px] pr-[30px] flex justify-between items-center">
                 <div className="text-[16px] lg:text-[24px] text-[#fff] font-[500]">
                   Изливы
@@ -254,8 +256,8 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Аксессуары — 2 колонки */}
-            <div className="col-span-4 lg:col-span-2 bg-[linear-gradient(180deg,rgba(44,53,70,0.1)_0%,rgba(31,44,73,0.9)_100%),url('./assets/aksessuary.png')] bg-cover bg-center rounded-[10px] cursor-pointer hover:bg-[url('./assets/aksessuary.png')]">
+            {/* Аксессуары — на мобиле: 1 колонка, на планшете: 2 колонки, на десктопе: 2 колонки */}
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2 bg-[linear-gradient(180deg,rgba(44,53,70,0.1)_0%,rgba(31,44,73,0.9)_100%),url('./assets/aksessuary.png')] bg-cover bg-center rounded-[10px] cursor-pointer hover:bg-[url('./assets/aksessuary.png')]">
               <div className="relative top-[75%] pb-[34px] pl-[30px] pr-[30px] flex justify-between items-center">
                 <div className="text-[16px] lg:text-[24px] text-[#fff] font-[500]">
                   Аксессуары
@@ -268,6 +270,8 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Секция акций */}
       <section className="pt-[80px] overflow-hidden">
         <div className="bg-[#fff] p-0 lg:p-[60px_80px] mx-[22px]">
           <div className="max-w-[1300px] mx-auto lg:px-4">
@@ -283,7 +287,9 @@ const Home = () => {
               </Link>
             </div>
 
-            <div className="flex flex-row flex-wrap lg:flex-nowrap justify-between items-start gap-[24px]">
+            {/* Контейнер для акций с адаптивной сеткой */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[24px]">
+              {/* Акция 1 */}
               <div className="card__item">
                 <div className="overflow-hidden">
                   <div className="relative">
@@ -319,6 +325,8 @@ const Home = () => {
                   </a>
                 </div>
               </div>
+              
+              {/* Акция 2 */}
               <div className="card__item">
                 <div className="relative">
                   <div className="card__item__desc absolute z-10 text-[20px] lg:text-[28px] font-600 text-[#fff] p-[30px_40px]">
@@ -348,6 +356,8 @@ const Home = () => {
                   </a>
                 </div>
               </div>
+              
+              {/* Акция 3 */}
               <div className="card__item">
                 <div className="relative">
                   <div className="absolute z-10 right-[0px]">
