@@ -60,19 +60,17 @@ const Footer = () => {
       {/* Основная секция футера */}
       <section className="pt-[60px] lg:pt-[80px] pb-[80px] bg-[#FFF]">
         <div className="max-w-[1300px] mx-auto px-4">
-          {/* Версия для 768px и выше */}
+          {/* Версия для 768px и выше (4 колонки) */}
           <div className="hidden md:block">
-            {/* 3 колонки */}
             <div className="flex flex-row justify-between mb-12">
-              {/* Колонка 1: Логотип */}
-              <div className="flex flex-col w-1/4">
+              {/* Колонка 1: Логотип и WhatsApp */}
+              <div className="flex flex-col w-[25%]">
                 <div className="w-[138px] mb-8">
                   <Link to="/">
                     <img className="" src={logof2} alt="" />
                   </Link>
                 </div>
                 
-                {/* Кнопка WhatsApp */}
                 <Link 
                   to="tel:+79379676127" 
                   className="flex justify-center items-center border-[2px] border-solid border-[#e5e9ec] rounded-[50px] p-[14_28px] w-full max-w-[217px] h-[60px] bg-[#f3f5f7] opacity-100 cursor-pointer hover:bg-[#e5e9ec] transition-colors"
@@ -104,11 +102,11 @@ const Footer = () => {
               </div>
 
               {/* Колонка 2: КАТАЛОГ */}
-              <div className="flex flex-col w-1/4">
+              <div className="flex flex-col w-[20%]">
                 <div className="mb-[30px] font-600 text-[18px] text-[rgba(77,_82,_108,_0.5)]">
                   КАТАЛОГ
                 </div>
-                <div className="flex flex-col gap-[15px] mb-8">
+                <div className="flex flex-col gap-[15px]">
                   <Link
                     className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
                     to="/catalog/mixers"
@@ -143,47 +141,14 @@ const Footer = () => {
                     Аксессуары
                   </a>
                 </div>
-
-                {/* Телефон и адрес под меню КАТАЛОГ */}
-                <div>
-                  <div className="text-[29px] text-[#213f74] font-[600] mb-[12px]">
-                    +7 999 999-99-99
-                  </div>
-                  <div className="flex items-center">
-                    <svg
-                      className="mr-[8px]"
-                      width="12"
-                      height="14"
-                      viewBox="0 0 10 12"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g clipPath="url(#clip0_0_18)">
-                        <path
-                          d="M5 0.125C6.29293 0.125 7.53291 0.638615 8.44715 1.55285C9.36139 2.46709 9.875 3.70707 9.875 5C9.875 7.06 8.4275 9.305 5.57 11.759C5.41111 11.8955 5.20853 11.9705 4.99906 11.9703C4.7896 11.9701 4.58715 11.8948 4.4285 11.758L4.2395 11.594C1.5085 9.204 0.125 7.014 0.125 5C0.125 3.70707 0.638615 2.46709 1.55285 1.55285C2.46709 0.638615 3.70707 0.125 5 0.125ZM5 3.125C4.50272 3.125 4.02581 3.32254 3.67417 3.67417C3.32254 4.02581 3.125 4.50272 3.125 5C3.125 5.49728 3.32254 5.97419 3.67417 6.32582C4.02581 6.67746 4.50272 6.875 5 6.875C5.49728 6.875 5.9742 6.67746 6.32583 6.32582C6.67746 5.97419 6.875 5.49728 6.875 5C6.875 4.50272 6.67746 4.02581 6.32583 3.67417C5.9742 3.32254 5.49728 3.125 5 3.125Z"
-                          fill="#213F74"
-                          fillOpacity="0.8"
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_0_18">
-                          <rect width="10" height="12" fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                    <span className="text-[15px] text-[rgba(33,_63,_116,_0.8)]">
-                      г. Новосибирск, улица, дом, офис
-                    </span>
-                  </div>
-                </div>
               </div>
 
               {/* Колонка 3: ДЛЯ КЛИЕНТА */}
-              <div className="flex flex-col w-2/5">
+              <div className="flex flex-col w-[20%]">
                 <div className="mb-[30px] font-600 text-[18px] text-[rgba(77,_82,_108,_0.5)]">
                   ДЛЯ КЛИЕНТА
                 </div>
-                <div className="flex flex-col gap-[15px] mb-8">
+                <div className="flex flex-col gap-[15px]">
                   <a
                     className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
                     href="/mixersstore/promotions"
@@ -216,9 +181,47 @@ const Footer = () => {
                   </a>
                 </div>
               </div>
+
+              {/* Колонка 4: КОНТАКТЫ */}
+              <div className="flex flex-col w-[25%]">
+                <div className="mb-[30px] font-600 text-[18px] text-[rgba(77,_82,_108,_0.5)]">
+                  КОНТАКТЫ
+                </div>
+                <div className="flex flex-col gap-[15px] mb-8">
+                  <div className="text-[29px] text-[#213f74] font-[600]">
+                    +7 999 999-99-99
+                  </div>
+                  <div className="flex items-start">
+                    <svg
+                      className="mr-[8px] mt-1 flex-shrink-0"
+                      width="12"
+                      height="14"
+                      viewBox="0 0 10 12"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g clipPath="url(#clip0_0_18)">
+                        <path
+                          d="M5 0.125C6.29293 0.125 7.53291 0.638615 8.44715 1.55285C9.36139 2.46709 9.875 3.70707 9.875 5C9.875 7.06 8.4275 9.305 5.57 11.759C5.41111 11.8955 5.20853 11.9705 4.99906 11.9703C4.7896 11.9701 4.58715 11.8948 4.4285 11.758L4.2395 11.594C1.5085 9.204 0.125 7.014 0.125 5C0.125 3.70707 0.638615 2.46709 1.55285 1.55285C2.46709 0.638615 3.70707 0.125 5 0.125ZM5 3.125C4.50272 3.125 4.02581 3.32254 3.67417 3.67417C3.32254 4.02581 3.125 4.50272 3.125 5C3.125 5.49728 3.32254 5.97419 3.67417 6.32582C4.02581 6.67746 4.50272 6.875 5 6.875C5.49728 6.875 5.9742 6.67746 6.32583 6.32582C6.67746 5.97419 6.875 5.49728 6.875 5C6.875 4.50272 6.67746 4.02581 6.32583 3.67417C5.9742 3.32254 5.49728 3.125 5 3.125Z"
+                          fill="#213F74"
+                          fillOpacity="0.8"
+                        />
+                      </g>
+                      <defs>
+                        <clipPath id="clip0_0_18">
+                          <rect width="10" height="12" fill="white" />
+                        </clipPath>
+                      </defs>
+                    </svg>
+                    <span className="text-[15px] text-[rgba(33,_63,_116,_0.8)]">
+                      г. Новосибирск, улица, дом, офис
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Форма подписки на всю ширину под 3 колонками */}
+            {/* Форма подписки на всю ширину под 4 колонками */}
             <div className="border-t border-[#e5e9ec] pt-8">
               <div className="text-[18px] font-[500] text-[#122952] mb-[20px]">
                 Узнавайте об акциях и новостях первыми, подпишитесь на рассылку
@@ -238,7 +241,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Мобильная версия (до 768px) */}
+          {/* Мобильная версия (до 768px) - оставляем без изменений */}
           <div className="md:hidden">
             {/* Логотип */}
             <div className="w-[138px] pb-[40px]">
@@ -417,12 +420,12 @@ const Footer = () => {
       {/* Нижняя секция с копирайтом */}
       <section className="bg-[#F3F5F7] pt-[20px] pb-[0px] h-auto min-h-[60px]">
         <div className="max-w-[1300px] mx-auto px-4">
-          {/* Десктопная версия (3 колонки) */}
+          {/* Десктопная версия (4 колонки) */}
           <div className="hidden md:flex flex-row justify-between items-center">
-            <div className="text-[15px] text-[#7F8295] w-1/4">
+            <div className="text-[15px] text-[#7F8295] w-[25%]">
               &copy; DEMM RUBINETTERIA 2025-2026
             </div>
-            <div className="text-[15px] text-[#7F8295] w-1/4 text-center">
+            <div className="text-[15px] text-[#7F8295] w-[25%] text-center">
               <Link
                 to="/mixersstore/offer"
                 className="text-[15px] text-[#7F8295] no-underline hover:text-[#213f74] transition-colors"
@@ -430,12 +433,20 @@ const Footer = () => {
                 Договор оферты
               </Link>
             </div>
-            <div className="text-[15px] text-[#7F8295] w-1/4 text-right">
+            <div className="text-[15px] text-[#7F8295] w-[25%] text-center">
               <Link
                 to="/mixersstore/soglasie"
                 className="text-[15px] text-[#7F8295] no-underline hover:text-[#213f74] transition-colors"
               >
                 Пользовательское соглашение
+              </Link>
+            </div>
+            <div className="text-[15px] text-[#7F8295] w-[25%] text-right">
+              <Link
+                to="/mixersstore/contacts"
+                className="text-[15px] text-[#7F8295] no-underline hover:text-[#213f74] transition-colors"
+              >
+                Контакты
               </Link>
             </div>
           </div>
@@ -454,6 +465,12 @@ const Footer = () => {
                 className="text-[14px] text-[#7F8295] no-underline"
               >
                 Пользовательское соглашение
+              </Link>
+              <Link
+                to="/mixersstore/contacts"
+                className="text-[14px] text-[#7F8295] no-underline"
+              >
+                Контакты
               </Link>
             </div>
             <div className="text-[14px] text-[#7F8295]">

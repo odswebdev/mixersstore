@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { ChevronDown, ChevronRight, Heading3 } from "lucide-react";
+import { ChevronDown, ChevronRight, X, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
 import PriceRangeSlider from "../components/PriceRangeSlider";
 
 export default function SidebarCatalog({
-  products, // 👈 добавили
+  products,
   selectedCollections,
   setSelectedCollections,
   selectedStyles,
@@ -20,6 +20,7 @@ export default function SidebarCatalog({
   selectedNumberSources,
   setSelectedNumberSources,
 }) {
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [isCollectionsOpen, setIsCollectionsOpen] = useState(true);
   const [isStylesOpen, setIsStylesOpen] = useState(true);
   const [isViewsOpen, setIsViewsOpen] = useState(true);
@@ -29,7 +30,7 @@ export default function SidebarCatalog({
   const [isNumberSourcesOpen, setIsNumberSourcesOpen] = useState(true);
   const [priceRange, setPriceRange] = useState([20000, 85000]);
 
-  // динамически считаем количество
+  // Динамически считаем количество
   const collectionCounts = products.reduce((acc, p) => {
     acc[p.collection] = (acc[p.collection] || 0) + 1;
     return acc;
@@ -47,47 +48,20 @@ export default function SidebarCatalog({
   const uniqueManagements = [...new Set(products.map((p) => p.management))];
   const uniqueNumberSources = [...new Set(products.map((p) => p.numberSource))];
 
-  const toggleCollection = (name) => {
-    setSelectedCollections((prev) =>
+  // Общие функции для переключения выбора
+  const createToggleHandler = (setter) => (name) => {
+    setter((prev) =>
       prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name]
     );
   };
 
-  const toggleStyle = (name) => {
-    setSelectedStyles((prev) =>
-      prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name]
-    );
-  };
-
-  const toggleView = (name) => {
-    setSelectedViews((prev) =>
-      prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name]
-    );
-  };
-
-  const toggleColor = (name) => {
-    setSelectedColors((prev) =>
-      prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name]
-    );
-  };
-
-  const toggleMountingType = (name) => {
-    setMountingTypes((prev) =>
-      prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name]
-    );
-  };
-
-  const toggleManagement = (name) => {
-    setSelectedManagements((prev) =>
-      prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name]
-    );
-  };
-
-  const toggleNumberSource = (name) => {
-    setSelectedNumberSources((prev) =>
-      prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name]
-    );
-  };
+  const toggleCollection = createToggleHandler(setSelectedCollections);
+  const toggleStyle = createToggleHandler(setSelectedStyles);
+  const toggleView = createToggleHandler(setSelectedViews);
+  const toggleColor = createToggleHandler(setSelectedColors);
+  const toggleMountingType = createToggleHandler(setSelectedMountingTypes);
+  const toggleManagement = createToggleHandler(setSelectedManagements);
+  const toggleNumberSource = createToggleHandler(setSelectedNumberSources);
 
   const resetFilters = () => {
     setSelectedCollections([]);
@@ -100,270 +74,394 @@ export default function SidebarCatalog({
     setPriceRange([20000, 85000]);
   };
 
-  return (
-    <aside className="bg-white shadow-md rounded-lg p-4 border-t-[1px] border-t-[#E5E9EC] mb-[25px]">
-      {/* Коллекция */}
-      <div>
-        <button
-          onClick={() => setIsCollectionsOpen(!isCollectionsOpen)}
-          className="flex items-baseline justify-between w-full text-lg font-semibold mb-2 border-none bg-transparent cursor-pointer"
-        >
-          <h2 className="text-[18px] font-medium text-[#122952] mt-6 mb-2">
-            Коллекция
-          </h2>
-          {isCollectionsOpen ? (
-            <ChevronDown className="w-[20px] h-[20px] text-gray-500" />
-          ) : (
-            <ChevronRight className="w-[20px] h-[20px] text-gray-500" />
-          )}
-        </button>
+  const totalSelectedFilters = 
+    selectedCollections.length +
+    selectedStyles.length +
+    selectedViews.length +
+    selectedColors.length +
+    selectedMountingTypes.length +
+    selectedManagements.length +
+    selectedNumberSources.length +
+    (priceRange[0] !== 20000 || priceRange[1] !== 85000 ? 1 : 0);
 
-        {isCollectionsOpen && (
-          <div className="space-y-2 pl-2">
-            {collections.map((collection) => (
-              <label
-                key={collection.name}
-                className="flex items-center gap-2 cursor-pointer mb-2"
-              >
-                <input
-                  type="checkbox"
-                  value={collection.name}
-                  checked={selectedCollections.includes(collection.name)}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (selectedCollections.includes(value)) {
-                      setSelectedCollections(
-                        selectedCollections.filter((c) => c !== value)
-                      );
-                    } else {
-                      setSelectedCollections([...selectedCollections, value]);
-                    }
-                  }}
-                  className="w-4 h-4 accent-[#213F74] cursor-pointer"
-                />
-                <span className="flex items-center justify-between text-[14px] w-full">
-                  <span
-                    className={`transition-all ${
-                      selectedCollections.includes(collection.name)
-                        ? "text-[#213F74] font-semibold"
-                        : "text-gray-700"
-                    }`}
-                  >
-                    {collection.name}
-                  </span>
-                  <span className="ml-2 text-xs opacity-75">
-                    ({collection.count})
-                  </span>
-                </span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
-      {/* Стиль */}
-      <div>
-        <button
-          onClick={() => setIsStylesOpen(!isStylesOpen)}
-          className="flex items-baseline justify-between w-full text-lg font-semibold mb-2 border-none bg-transparent cursor-pointer"
-        >
-          <h2 className="text-[18px] font-medium text-[#122952] mt-6 mb-2">
-            Стиль
-          </h2>
-          {isStylesOpen ? (
-            <ChevronDown className="w-[20px] h-[20px] text-gray-500" />
-          ) : (
-            <ChevronRight className="w-[20px] h-[20px] text-gray-500" />
-          )}
-        </button>
-
-        {!isStylesOpen && (
-          <div className="space-y-2 pl-2">
-            {uniqueStyles.map((style) => (
-              <label key={style} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={selectedStyles.includes(style)}
-                  onChange={() => toggleStyle(style)}
-                  className="rounded text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-[16px] text-[#797D91]">{style}</span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
-      {/* Вид */}
-      <div>
-        <button
-          onClick={() => setIsViewsOpen(!isViewsOpen)}
-          className="flex items-baseline justify-between w-full text-lg font-semibold mb-2 border-none bg-transparent cursor-pointer"
-        >
-          <h2 className="text-[18px] font-medium text-[#122952] mt-6 mb-2">
-            Вид
-          </h2>
-          {isViewsOpen ? (
-            <ChevronDown className="w-[20px] h-[20px] text-gray-500" />
-          ) : (
-            <ChevronRight className="w-[20px] h-[20px] text-gray-500" />
-          )}
-        </button>
-
-        {!isViewsOpen && (
-          <div className="space-y-2 pl-2">
-            {uniqueViews.map((view) => (
-              <label key={view} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={selectedViews.includes(view)}
-                  onChange={() => toggleView(view)}
-                  className="rounded text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-[16px] text-[#797D91]">{view}</span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
-      {/* Цвет */}
-      <div>
-        <button
-          onClick={() => setIsColorsOpen(!isColorsOpen)}
-          className="flex items-baseline justify-between w-full text-lg font-semibold mb-2 border-none bg-transparent cursor-pointer"
-        >
-          <h2 className="text-[18px] font-medium text-[#122952] mt-6 mb-2">
-            Цвет
-          </h2>
-          {isColorsOpen ? (
-            <ChevronDown className="w-[20px] h-[20px] text-gray-500" />
-          ) : (
-            <ChevronRight className="w-[20px] h-[20px] text-gray-500" />
-          )}
-        </button>
-
-        {!isColorsOpen && (
-          <div className="space-y-2 pl-2">
-            {uniqueColors.map((color) => (
-              <label key={color} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={selectedColors.includes(color)}
-                  onChange={() => toggleColor(color)}
-                  className="rounded text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-[16px] text-[#797D91]">{color}</span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
-      {/* Тип монтажа */}
-      <div>
-        <button
-          onClick={() => setIsMountingTypesOpen(!isMountingTypesOpen)}
-          className="flex items-baseline justify-between w-full text-lg font-semibold mb-2 border-none bg-transparent cursor-pointer"
-        >
-          <h2 className="text-[18px] font-medium text-[#122952] mt-6 mb-2">
-            Тип монтажа
-          </h2>
-          {isMountingTypesOpen ? (
-            <ChevronDown className="w-[20px] h-[20px] text-gray-500" />
-          ) : (
-            <ChevronRight className="w-[20px] h-[20px] text-gray-500" />
-          )}
-        </button>
-
-        {!isMountingTypesOpen && (
-          <div className="space-y-2 pl-2">
-            {uniqueMountingTypes.map((mountingType) => (
-              <label key={mountingType} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={selectedMountingTypes.includes(mountingType)}
-                  onChange={() => toggleMountingType(mountingType)}
-                  className="rounded text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-[16px] text-[#797D91]">
-                  {mountingType}
-                </span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
-      {/* Управление */}
-      <div>
-        <button
-          onClick={() => setIsManagementsOpen(!isManagementsOpen)}
-          className="flex items-baseline justify-between w-full text-lg font-semibold mb-2 border-none bg-transparent cursor-pointer"
-        >
-          <h2 className="text-[18px] font-medium text-[#122952] mt-6 mb-2">
-            Управление
-          </h2>
-          {isManagementsOpen ? (
-            <ChevronDown className="w-[20px] h-[20px] text-gray-500" />
-          ) : (
-            <ChevronRight className="w-[20px] h-[20px] text-gray-500" />
-          )}
-        </button>
-
-        {!isManagementsOpen && (
-          <div className="space-y-2 pl-2">
-            {uniqueManagements.map((management) => (
-              <label key={management} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={selectedManagements.includes(management)}
-                  onChange={() => toggleManagement(management)}
-                  className="rounded text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-[16px] text-[#797D91]">{management}</span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
-      {/* Кол-во источников */}
-      <div>
-        <button
-          onClick={() => setIsNumberSourcesOpen(!isNumberSourcesOpen)}
-          className="flex items-baseline justify-between w-full text-lg font-semibold mb-2 border-none bg-transparent cursor-pointer"
-        >
-          <h2 className="text-[18px] font-medium text-[#122952] mt-6 mb-2">
-            Количество источников
-          </h2>
-          {isNumberSourcesOpen ? (
-            <ChevronDown className="w-[20px] h-[20px] text-gray-500" />
-          ) : (
-            <ChevronRight className="w-[20px] h-[20px] text-gray-500" />
-          )}
-        </button>
-
-        {!isNumberSourcesOpen && (
-          <div className="space-y-2 pl-2">
-            {uniqueNumberSources.map((numberSource) => (
-              <label key={numberSource} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={selectedNumberSources.includes(numberSource)}
-                  onChange={() => toggleNumberSource(numberSource)}
-                  className="rounded text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-[16px] text-[#797D91]">
-                  {numberSource}
-                </span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
-      <PriceRangeSlider priceRange={priceRange} setPriceRange={setPriceRange} />
-      {/* Сброс */}
-      <Link
-        onClick={resetFilters}
-        className="mt-6 text-[14px] font-medium text-[#797D91] border-none bg-transparent underline cursor-pointer"
+  // Компонент секции фильтра
+  const FilterSection = ({ 
+    title, 
+    isOpen, 
+    setIsOpen, 
+    items, 
+    selectedItems, 
+    toggleItem,
+    showCount = false,
+    isColorSection = false
+  }) => (
+    <div className="border-b border-gray-100 last:border-b-0">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-full py-4 hover:bg-gray-50 transition-colors duration-200 rounded-lg px-1"
       >
-        Сбросить фильтры
-      </Link>
-    </aside>
+        <div className="flex items-center gap-2">
+          <h3 className="text-base font-semibold text-gray-900">{title}</h3>
+          {selectedItems.length > 0 && (
+            <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full min-w-[20px] h-5 flex items-center justify-center">
+              {selectedItems.length}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          {isOpen ? (
+            <ChevronDown className="w-5 h-5 text-gray-500 transition-transform duration-200" />
+          ) : (
+            <ChevronRight className="w-5 h-5 text-gray-500 transition-transform duration-200" />
+          )}
+        </div>
+      </button>
+      
+      <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
+        isOpen ? "max-h-[500px] opacity-100 mb-4" : "max-h-0 opacity-0"
+      }`}>
+        <div className="space-y-2 pb-2">
+          {items.map((item) => {
+            const name = item.name || item;
+            const count = item.count;
+            const isSelected = selectedItems.includes(name);
+            
+            return (
+              <button
+                key={name}
+                onClick={() => toggleItem(name)}
+                className={`flex items-center justify-between w-full p-3 rounded-lg transition-all duration-200 ${
+                  isSelected 
+                    ? "bg-blue-50 border border-blue-200" 
+                    : "hover:bg-gray-50 border border-transparent"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-4 h-4 border rounded-md flex items-center justify-center transition-colors ${
+                    isSelected 
+                      ? "bg-blue-600 border-blue-600" 
+                      : "bg-white border-gray-300 hover:border-blue-400"
+                  }`}>
+                    {isSelected && (
+                      <div className="w-2 h-2 bg-white rounded-sm" />
+                    )}
+                  </div>
+                  <span className={`text-sm font-medium ${
+                    isSelected ? "text-blue-700" : "text-gray-700"
+                  }`}>
+                    {name}
+                  </span>
+                </div>
+                {showCount && count !== undefined && (
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    isSelected 
+                      ? "bg-blue-100 text-blue-700" 
+                      : "bg-gray-100 text-gray-600"
+                  }`}>
+                    {count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Мобильная кнопка открытия фильтров */}
+      <button
+        onClick={() => setIsMobileFiltersOpen(true)}
+        className="lg:hidden fixed bottom-6 right-6 z-40 bg-white shadow-lg rounded-full p-4 flex items-center gap-2 border border-gray-200 animate-fade-in"
+      >
+        <Filter className="w-5 h-5" />
+        {totalSelectedFilters > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+            {totalSelectedFilters}
+          </span>
+        )}
+      </button>
+
+      {/* Сайдбар для десктопа */}
+      <aside className="hidden lg:block bg-white shadow-lg rounded-xl p-6 border border-gray-200 sticky top-6 h-fit transition-all duration-300 hover:shadow-xl">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <Filter className="w-5 h-5 text-gray-700" />
+            <h2 className="text-xl font-bold text-gray-900">Фильтры</h2>
+          </div>
+          {totalSelectedFilters > 0 && (
+            <button
+              onClick={resetFilters}
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
+            >
+              Сбросить ({totalSelectedFilters})
+            </button>
+          )}
+        </div>
+
+        <div className="space-y-1">
+          <FilterSection
+            title="Коллекция"
+            isOpen={isCollectionsOpen}
+            setIsOpen={setIsCollectionsOpen}
+            items={collections}
+            selectedItems={selectedCollections}
+            toggleItem={toggleCollection}
+            showCount={true}
+          />
+          
+          <FilterSection
+            title="Стиль"
+            isOpen={isStylesOpen}
+            setIsOpen={setIsStylesOpen}
+            items={uniqueStyles}
+            selectedItems={selectedStyles}
+            toggleItem={toggleStyle}
+          />
+          
+          <FilterSection
+            title="Вид"
+            isOpen={isViewsOpen}
+            setIsOpen={setIsViewsOpen}
+            items={uniqueViews}
+            selectedItems={selectedViews}
+            toggleItem={toggleView}
+          />
+          
+          <FilterSection
+            title="Цвет"
+            isOpen={isColorsOpen}
+            setIsOpen={setIsColorsOpen}
+            items={uniqueColors}
+            selectedItems={selectedColors}
+            toggleItem={toggleColor}
+          />
+          
+          <FilterSection
+            title="Тип монтажа"
+            isOpen={isMountingTypesOpen}
+            setIsOpen={setIsMountingTypesOpen}
+            items={uniqueMountingTypes}
+            selectedItems={selectedMountingTypes}
+            toggleItem={toggleMountingType}
+          />
+          
+          <FilterSection
+            title="Управление"
+            isOpen={isManagementsOpen}
+            setIsOpen={setIsManagementsOpen}
+            items={uniqueManagements}
+            selectedItems={selectedManagements}
+            toggleItem={toggleManagement}
+          />
+          
+          <FilterSection
+            title="Кол-во источников"
+            isOpen={isNumberSourcesOpen}
+            setIsOpen={setIsNumberSourcesOpen}
+            items={uniqueNumberSources}
+            selectedItems={selectedNumberSources}
+            toggleItem={toggleNumberSource}
+          />
+        </div>
+
+        {/* Ценовой диапазон */}
+        <div className="mt-6 pt-6 border-t border-gray-100">
+          <h3 className="text-base font-semibold text-gray-900 mb-4">Цена, ₽</h3>
+          <div className="px-1">
+            <PriceRangeSlider priceRange={priceRange} setPriceRange={setPriceRange} />
+          </div>
+          <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
+            <span>от {priceRange[0].toLocaleString()} ₽</span>
+            <span>до {priceRange[1].toLocaleString()} ₽</span>
+          </div>
+        </div>
+
+        {/* Кнопка сброса */}
+        <button
+          onClick={resetFilters}
+          className="w-full mt-8 py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg transition-colors duration-200 border border-gray-300 hover:border-gray-400 active:scale-[0.98]"
+        >
+          Сбросить все фильтры
+        </button>
+      </aside>
+
+      {/* Мобильная версия фильтров */}
+      {isMobileFiltersOpen && (
+        <>
+          {/* Оверлей */}
+          <div 
+            className="lg:hidden fixed inset-0 bg-black/50 z-50 backdrop-blur-sm transition-opacity duration-300"
+            onClick={() => setIsMobileFiltersOpen(false)}
+          />
+          
+          {/* Сайдбар для мобильных */}
+          <aside className="lg:hidden fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-50 overflow-y-auto animate-slide-in">
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Filter className="w-6 h-6 text-gray-700" />
+                  <h2 className="text-xl font-bold text-gray-900">Фильтры</h2>
+                  {totalSelectedFilters > 0 && (
+                    <span className="bg-blue-600 text-white text-sm px-2 py-1 rounded-full">
+                      {totalSelectedFilters}
+                    </span>
+                  )}
+                </div>
+                <button
+                  onClick={() => setIsMobileFiltersOpen(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-4 space-y-4">
+              <FilterSection
+                title="Коллекция"
+                isOpen={isCollectionsOpen}
+                setIsOpen={setIsCollectionsOpen}
+                items={collections}
+                selectedItems={selectedCollections}
+                toggleItem={toggleCollection}
+                showCount={true}
+              />
+              
+              <FilterSection
+                title="Стиль"
+                isOpen={isStylesOpen}
+                setIsOpen={setIsStylesOpen}
+                items={uniqueStyles}
+                selectedItems={selectedStyles}
+                toggleItem={toggleStyle}
+              />
+              
+              <FilterSection
+                title="Вид"
+                isOpen={isViewsOpen}
+                setIsOpen={setIsViewsOpen}
+                items={uniqueViews}
+                selectedItems={selectedViews}
+                toggleItem={toggleView}
+              />
+              
+              <FilterSection
+                title="Цвет"
+                isOpen={isColorsOpen}
+                setIsOpen={setIsColorsOpen}
+                items={uniqueColors}
+                selectedItems={selectedColors}
+                toggleItem={toggleColor}
+              />
+              
+              <FilterSection
+                title="Тип монтажа"
+                isOpen={isMountingTypesOpen}
+                setIsOpen={setIsMountingTypesOpen}
+                items={uniqueMountingTypes}
+                selectedItems={selectedMountingTypes}
+                toggleItem={toggleMountingType}
+              />
+              
+              <FilterSection
+                title="Управление"
+                isOpen={isManagementsOpen}
+                setIsOpen={setIsManagementsOpen}
+                items={uniqueManagements}
+                selectedItems={selectedManagements}
+                toggleItem={toggleManagement}
+              />
+              
+              <FilterSection
+                title="Кол-во источников"
+                isOpen={isNumberSourcesOpen}
+                setIsOpen={setIsNumberSourcesOpen}
+                items={uniqueNumberSources}
+                selectedItems={selectedNumberSources}
+                toggleItem={toggleNumberSource}
+              />
+
+              {/* Ценовой диапазон для мобильных */}
+              <div className="mt-6 pt-6 border-t border-gray-100">
+                <h3 className="text-base font-semibold text-gray-900 mb-4">Цена, ₽</h3>
+                <div className="px-1">
+                  <PriceRangeSlider priceRange={priceRange} setPriceRange={setPriceRange} />
+                </div>
+                <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
+                  <span>от {priceRange[0].toLocaleString()} ₽</span>
+                  <span>до {priceRange[1].toLocaleString()} ₽</span>
+                </div>
+              </div>
+
+              {/* Кнопки действий для мобильных */}
+              <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 mt-6">
+                <div className="flex gap-3">
+                  <button
+                    onClick={resetFilters}
+                    className="flex-1 py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium rounded-lg transition-colors duration-200"
+                  >
+                    Сбросить
+                  </button>
+                  <button
+                    onClick={() => setIsMobileFiltersOpen(false)}
+                    className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
+                  >
+                    Показать товары
+                  </button>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </>
+      )}
+
+      {/* Добавляем стили для анимаций */}
+      <style jsx>{`
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slide-in {
+          from { transform: translateX(100%); }
+          to { transform: translateX(0); }
+        }
+        
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out;
+        }
+        
+        .animate-slide-in {
+          animation: slide-in 0.3s ease-out;
+        }
+        
+        /* Кастомный скроллбар */
+        .overflow-y-auto {
+          scrollbar-width: thin;
+          scrollbar-color: #cbd5e1 #f1f5f9;
+        }
+        
+        .overflow-y-auto::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .overflow-y-auto::-webkit-scrollbar-track {
+          background: #f1f5f9;
+          border-radius: 3px;
+        }
+        
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 3px;
+        }
+        
+        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
+        }
+      `}</style>
+    </>
   );
 }

@@ -201,7 +201,7 @@ const Header = () => {
           </div>
         </div>
         <div className="bg-[#fff] w-full">
-          <div className="max-w-[1300px] mx-auto px-4 pt-4 pb-4 flex flex-row justify-between items-center py-2 lg:py-0">
+          <div className="max-w-[1300px] mx-auto px-4 flex flex-row justify-between items-center py-4 lg:py-0">
             {/* Логотип - 1 */}
             <div className="w-[100px] lg:w-[138px]">
               <Link to="/">

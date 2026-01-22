@@ -397,22 +397,163 @@ const Catalog = () => {
                 )}
               </div>
 
-              {/* Пагинация */}
-              <div className="flex justify-center items-center gap-3 mt-6">
-                {Array.from({ length: totalPages }, (_, i) => (
-                  <button
-                    key={i + 1}
-                    onClick={() => paginate(i + 1)}
-                    className={`px-3 py-1 rounded ${
-                      currentPage === i + 1
-                        ? "bg-[#213F74] text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
-              </div>
+{/* Пагинация - улучшенная версия */}
+<div className="flex flex-col items-center mt-12 mb-8">
+  {/* Информация о текущей странице */}
+  <div className="mb-6 text-[#797d91] text-sm">
+    Показано {indexOfFirstProduct + 1}-{Math.min(indexOfLastProduct, sortedProducts.length)} из {sortedProducts.length} товаров
+  </div>
+  
+  {/* Кнопки пагинации */}
+  <div className="flex items-center justify-center gap-2">
+    {/* Кнопка "Назад" */}
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={() => paginate(Math.max(1, currentPage - 1))}
+      disabled={currentPage === 1}
+      className={`flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-200 ${
+        currentPage === 1
+          ? "bg-[#F3F5F7] text-[#a3a5b2] cursor-not-allowed"
+          : "bg-white text-[#213F74] hover:bg-[#213F74] hover:text-white border border-[#DCDC]"
+      }`}
+      aria-label="Предыдущая страница"
+    >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+      </svg>
+    </motion.button>
+
+    {/* Основные кнопки страниц */}
+    <div className="flex items-center gap-1">
+      {(() => {
+        const pages = [];
+        const maxVisiblePages = window.innerWidth < 768 ? 3 : 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+        
+        if (endPage - startPage + 1 < maxVisiblePages) {
+          startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+
+        // Первая страница и многоточие
+        if (startPage > 1) {
+          pages.push(
+            <motion.button
+              key={1}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => paginate(1)}
+              className={`flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-200 ${
+                currentPage === 1
+                  ? "bg-[#213F74] text-white shadow-lg"
+                  : "bg-white text-[#213F74] hover:bg-[#213F74] hover:text-white border border-[#DCDC]"
+              }`}
+            >
+              1
+            </motion.button>
+          );
+          
+          if (startPage > 2) {
+            pages.push(
+              <span key="dots1" className="flex items-center justify-center w-10 h-10 text-[#797d91]">
+                ...
+              </span>
+            );
+          }
+        }
+
+        // Основные страницы
+        for (let i = startPage; i <= endPage; i++) {
+          pages.push(
+            <motion.button
+              key={i}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => paginate(i)}
+              className={`flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-200 ${
+                currentPage === i
+                  ? "bg-[#213F74] text-white shadow-lg font-medium"
+                  : "bg-white text-[#213F74] hover:bg-[#213F74] hover:text-white border border-[#DCDC]"
+              }`}
+            >
+              {i}
+            </motion.button>
+          );
+        }
+
+        // Последняя страница и многоточие
+        if (endPage < totalPages) {
+          if (endPage < totalPages - 1) {
+            pages.push(
+              <span key="dots2" className="flex items-center justify-center w-10 h-10 text-[#797d91]">
+                ...
+              </span>
+            );
+          }
+          
+          pages.push(
+            <motion.button
+              key={totalPages}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => paginate(totalPages)}
+              className={`flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-200 ${
+                currentPage === totalPages
+                  ? "bg-[#213F74] text-white shadow-lg"
+                  : "bg-white text-[#213F74] hover:bg-[#213F74] hover:text-white border border-[#DCDC]"
+              }`}
+            >
+              {totalPages}
+            </motion.button>
+          );
+        }
+
+        return pages;
+      })()}
+    </div>
+
+    {/* Кнопка "Вперед" */}
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
+      disabled={currentPage === totalPages}
+      className={`flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-200 ${
+        currentPage === totalPages
+          ? "bg-[#F3F5F7] text-[#a3a5b2] cursor-not-allowed"
+          : "bg-white text-[#213F74] hover:bg-[#213F74] hover:text-white border border-[#DCDC]"
+      }`}
+      aria-label="Следующая страница"
+    >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+      </svg>
+    </motion.button>
+  </div>
+
+  {/* Селектор количества товаров на странице */}
+  {sortedProducts.length > 6 && (
+    <div className="flex items-center gap-4 mt-6">
+      <span className="text-[#797d91] text-sm">Товаров на странице:</span>
+      <select
+        value={itemsPerPage}
+        onChange={(e) => {
+          setItemsPerPage(Number(e.target.value));
+          setCurrentPage(1); // Сбрасываем на первую страницу при изменении количества
+        }}
+        className="border border-[#DCDC] rounded-lg px-3 py-1 text-[#213F74] bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#213F74] focus:ring-opacity-50"
+      >
+        <option value={6}>6</option>
+        <option value={12}>12</option>
+        <option value={24}>24</option>
+        <option value={48}>48</option>
+      </select>
+    </div>
+  )}
+</div>
+
+
 
             </div>
           </div>
