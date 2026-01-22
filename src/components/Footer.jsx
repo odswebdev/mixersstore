@@ -184,9 +184,24 @@ const Footer = () => {
 
               {/* Колонка 4: КОНТАКТЫ */}
               <div className="flex flex-col w-[25%]">
-                <div className="mb-[30px] font-600 text-[18px] text-[rgba(77,_82,_108,_0.5)]">
-                  КОНТАКТЫ
-                </div>
+            <div className="border-t border-[#e5e9ec] pt-8">
+              <div className="text-[18px] font-[500] text-[#122952] mb-[20px]">
+                Узнавайте об акциях и новостях первыми, подпишитесь на рассылку
+              </div>
+              <div className="relative flex flex-row mb-[20px] max-w-[500px]">
+                <input
+                  className="z-3 email__t border border-solid border-[#e5e9ec] rounded-[46px] w-full h-[60px] bg-[#f3f5f7] pl-6 pr-40"
+                  type="text"
+                  name=""
+                  id=""
+                  placeholder="Электронная почта"
+                />
+                <button className="absolute z-10 right-[0px] w-[163px] h-[65px] bg-[#213f74] rounded-[50px] text-[14px] font-[500] text-[#FFF] border-none cursor-pointer hover:bg-[#172b58] transition-colors">
+                  Подписаться
+                </button>
+              </div>
+            </div>
+          </div>
                 <div className="flex flex-col gap-[15px] mb-8">
                   <div className="text-[29px] text-[#213f74] font-[600]">
                     +7 999 999-99-99
@@ -221,25 +236,6 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Форма подписки на всю ширину под 4 колонками */}
-            <div className="border-t border-[#e5e9ec] pt-8">
-              <div className="text-[18px] font-[500] text-[#122952] mb-[20px]">
-                Узнавайте об акциях и новостях первыми, подпишитесь на рассылку
-              </div>
-              <div className="relative flex flex-row mb-[20px] max-w-[500px]">
-                <input
-                  className="z-3 email__t border border-solid border-[#e5e9ec] rounded-[46px] w-full h-[60px] bg-[#f3f5f7] pl-6 pr-40"
-                  type="text"
-                  name=""
-                  id=""
-                  placeholder="Электронная почта"
-                />
-                <button className="absolute z-10 right-[0px] w-[163px] h-[65px] bg-[#213f74] rounded-[50px] text-[14px] font-[500] text-[#FFF] border-none cursor-pointer hover:bg-[#172b58] transition-colors">
-                  Подписаться
-                </button>
-              </div>
-            </div>
-          </div>
 
           {/* Мобильная версия (до 768px) - оставляем без изменений */}
           <div className="md:hidden">
