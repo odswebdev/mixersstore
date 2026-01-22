@@ -40,7 +40,7 @@ const Catalog = () => {
   const [priceRange, setPriceRange] = useState([20000, 85000]);
 
   // 🔹 Категории (вкладки)
-  const categories = ["Новинки", "Акционные товары", "Хиты продаж"];
+  const categories = ["Новинки", "Акция", "Хиты продаж"];
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   const sortOptions = [
@@ -414,23 +414,6 @@ const Catalog = () => {
                 ))}
               </div>
 
-              {/* Выбор количества товаров на странице */}
-              <div className="flex justify-end mb-4">
-                <select
-                  value={itemsPerPage}
-                  onChange={(e) => {
-                    setItemsPerPage(Number(e.target.value));
-                    setCurrentPage(1);
-                  }}
-                  className="border rounded p-2 text-sm"
-                >
-                  {[6, 12, 18, 24].map((n) => (
-                    <option key={n} value={n}>
-                      {n} на странице
-                    </option>
-                  ))}
-                </select>
-              </div>
             </div>
           </div>
         </div>

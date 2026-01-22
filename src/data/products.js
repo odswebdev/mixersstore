@@ -119,7 +119,7 @@ export const products = [
     management: "Однорычажный",
     numberSource: 1,
     collection: "ACIARIUM INOX",
-    labels: ["Акционные товары"],
+    labels: ["Акция"],
   },
   {
     id: 7,
@@ -138,6 +138,6 @@ export const products = [
     management: "Однорычажный",
     numberSource: 1,
     collection: "ACIARIUM INOX",
-    labels: ["Акционные товары"],
+    labels: ["Акция"],
   },
 ];

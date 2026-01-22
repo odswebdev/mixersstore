@@ -32,7 +32,7 @@ const CategoryPage = ({ title, category }) => {
   const [priceRange, setPriceRange] = useState([20000, 85000]);
 
   // 🔹 Подкатегории (Новинки / Акции / Хиты)
-  const categories = ["Новинки", "Акционные товары", "Хиты продаж"];
+  const categories = ["Новинки", "Акция", "Хиты продаж"];
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   // 🔹 Сортировка
@@ -216,7 +216,7 @@ const CategoryPage = ({ title, category }) => {
                                   case "Новинки":
                                     labelStyle = "bg-green-500";
                                     break;
-                                  case "Акционные товары":
+                                  case "Акция":
                                     labelStyle = "bg-red-500";
                                     break;
                                   case "Хиты продаж":
