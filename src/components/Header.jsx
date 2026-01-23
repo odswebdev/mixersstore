@@ -3,6 +3,7 @@ import CartIcon from "../components/CartIcon";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { motion, AnimatePresence } from "framer-motion";
+import { products } from "../path/to/products"; // Импортируем реальные товары
 
 const Header = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -16,18 +17,11 @@ const Header = () => {
   const [focused, setFocused] = useState(false);
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [cartItemsCount, setCartItemsCount] = useState(3); // Пример количества товаров
-  const [isCatalogOpen, setIsCatalogOpen] = useState(false); // Состояние для открытия/закрытия каталога
+  const [cartItemsCount, setCartItemsCount] = useState(3);
+  const [isCatalogOpen, setIsCatalogOpen] = useState(false);
 
-  const products2 = [
-    { id: 1, name: "Смеситель LUX", price: "5000₽" },
-    { id: 2, name: "Душевая система PRO", price: "7500₽" },
-    { id: 3, name: "Излив Comfort", price: "1200₽" },
-    { id: 4, name: "Аксессуар Deluxe", price: "800₽" },
-    { id: 5, name: "Душевая стойка", price: "3200₽" },
-    { id: 6, name: "Смеситель Basic", price: "2500₽" },
-    { id: 7, name: "Душевая система LUX", price: "9800₽" },
-  ];
+  // Используем реальные товары из импорта
+  const availableProducts = products.filter(product => product.inStock === "В наличии");
 
   const links = [
     { id: 1, link: "О компании", href: "/about" },
@@ -51,6 +45,7 @@ const Header = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
+  const searchContainerRef = useRef(null);
   const navigate = useNavigate();
 
   // Блокировка скролла при открытом мобильном меню
@@ -66,18 +61,25 @@ const Header = () => {
     };
   }, [menuOpen]);
 
+  // Поиск товаров - только те, что есть в наличии
   useEffect(() => {
     if (query.trim() === "") {
       setResults([]);
       setDropdownOpen(false);
       return;
     }
-    const filtered = products2.filter((p) =>
-      p.name.toLowerCase().includes(query.toLowerCase())
+    
+    // Фильтрация товаров: только те, что есть в наличии
+    const filtered = availableProducts.filter((p) =>
+      p.name.toLowerCase().includes(query.toLowerCase()) ||
+      p.category.toLowerCase().includes(query.toLowerCase())
     );
-    setResults(filtered);
+    
+    // Ограничиваем количество результатов для лучшего UX
+    const limitedResults = filtered.slice(0, 8);
+    setResults(limitedResults);
     setDropdownOpen(true);
-  }, [query]);
+  }, [query, availableProducts]);
 
   // Закрытие выпадающего списка при клике вне поля
   useEffect(() => {
@@ -85,34 +87,100 @@ const Header = () => {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target) &&
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target) &&
         inputRef.current &&
         !inputRef.current.contains(event.target)
       ) {
         setDropdownOpen(false);
-        if (window.innerWidth < 1024) {
-          setIsSearchVisible(false);
+      }
+    };
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
+
+  // Обновление позиции выпадающего списка
+  useEffect(() => {
+    const updateDropdownPosition = () => {
+      if (searchContainerRef.current && dropdownRef.current && dropdownOpen) {
+        const searchRect = searchContainerRef.current.getBoundingClientRect();
+        if (window.innerWidth >= 1024) {
+          // Десктоп: центрируем под полем поиска
+          dropdownRef.current.style.left = `${searchRect.left}px`;
+          dropdownRef.current.style.width = `${searchRect.width}px`;
+          dropdownRef.current.style.top = `${searchRect.bottom + 5}px`;
+        } else {
+          // Мобилка: полная ширина
+          dropdownRef.current.style.left = "0";
+          dropdownRef.current.style.width = "100%";
+          dropdownRef.current.style.top = `${searchRect.bottom}px`;
         }
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+
+    updateDropdownPosition();
+    window.addEventListener("resize", updateDropdownPosition);
+    window.addEventListener("scroll", updateDropdownPosition);
+
+    return () => {
+      window.removeEventListener("resize", updateDropdownPosition);
+      window.removeEventListener("scroll", updateDropdownPosition);
+    };
+  }, [dropdownOpen, isSearchVisible, query]);
 
   const handleSearch = () => {
-    navigate(`/search?query=${query}`);
-    setDropdownOpen(false);
-    if (window.innerWidth < 1024) {
-      setIsSearchVisible(false);
+    if (query.trim()) {
+      navigate(`/search?query=${encodeURIComponent(query)}`);
+      setDropdownOpen(false);
+      setQuery("");
+      if (window.innerWidth < 1024) {
+        setIsSearchVisible(false);
+      }
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
     }
   };
 
   const toggleSearch = () => {
-    setIsSearchVisible(!isSearchVisible);
-    if (!isSearchVisible) {
+    const newState = !isSearchVisible;
+    setIsSearchVisible(newState);
+    if (newState) {
       setTimeout(() => {
         inputRef.current?.focus();
       }, 100);
+    } else {
+      setQuery("");
+      setDropdownOpen(false);
     }
+  };
+
+  const handleProductClick = (productSlug) => {
+    navigate(`/product/${productSlug}`);
+    setDropdownOpen(false);
+    setQuery("");
+    if (window.innerWidth < 1024) {
+      setIsSearchVisible(false);
+      setMenuOpen(false);
+    }
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('ru-RU', {
+      style: 'currency',
+      currency: 'RUB',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(price).replace('RUB', '₽');
   };
 
   const handleChange = (e) => {
@@ -149,6 +217,73 @@ const Header = () => {
       setFormData({ name: "", phone: "", consent: false });
     }, 3000);
   };
+
+  // Рендер выпадающего списка поиска
+  const renderSearchDropdown = () => (
+    <motion.div
+      ref={dropdownRef}
+      className={`fixed lg:absolute bg-white shadow-2xl rounded-lg z-50 overflow-hidden border border-gray-200 ${
+        window.innerWidth < 1024 ? 'left-0 w-full' : ''
+      }`}
+      style={{
+        maxHeight: '400px',
+        overflowY: 'auto',
+        scrollbarWidth: 'thin',
+        scrollbarColor: '#cbd5e1 transparent',
+      }}
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+    >
+      {results.length === 0 && query.trim() !== '' ? (
+        <div className="p-4 text-gray-500 text-center">
+          Ничего не найдено
+        </div>
+      ) : (
+        <>
+          {results.map((product) => (
+            <button
+              key={product.id}
+              onClick={() => handleProductClick(product.slug)}
+              className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+            >
+              <div className="flex justify-between items-center">
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-gray-900 truncate">
+                    {product.name}
+                  </div>
+                  <div className="text-sm text-gray-500 truncate">
+                    {product.category}
+                  </div>
+                </div>
+                <div className="ml-3 flex-shrink-0">
+                  <div className="font-semibold text-gray-900">
+                    {formatPrice(product.price)}
+                  </div>
+                  {product.oldPrice && (
+                    <div className="text-sm text-gray-400 line-through">
+                      {formatPrice(product.oldPrice)}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </button>
+          ))}
+          
+          {results.length > 0 && (
+            <div className="p-4 border-t border-gray-200 bg-gray-50">
+              <button
+                onClick={handleSearch}
+                className="w-full py-3 bg-[#213F74] text-white rounded-lg hover:bg-[#002D79] transition-colors font-medium"
+              >
+                Показать все результаты ({results.length})
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </motion.div>
+  );
 
   return (
     <header className="relative">
@@ -200,150 +335,131 @@ const Header = () => {
             </Link>
           </div>
         </div>
-        <div className="bg-[#fff] w-full">
+        
+        <div className="bg-white w-full">
           <div className="max-w-[1300px] mx-auto px-4 flex flex-row justify-between items-center py-4">
-            {/* Логотип - 1 */}
+            {/* Логотип */}
             <div className="w-[100px] lg:w-[138px]">
               <Link to="/">
                 <img className="w-full h-auto" src={logo} alt="Логотип" />
               </Link>
             </div>
 
-            {/* Поиск - 2 (на мобиле появляется при нажатии на иконку) */}
-            <div className="hidden lg:block relative flex-1 max-w-[686px] mx-4">
-              <input
-                ref={inputRef}
-                type="text"
-                placeholder="Поиск по сайту"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onFocus={() => results.length > 0 && setDropdownOpen(true)}
-                className="w-full h-[50px] px-5 rounded-full border border-[#e5e9ec] focus:outline-none"
-              />
-              <button
-                onClick={handleSearch}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#213F74]"
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+            {/* Десктопный поиск */}
+            <div 
+              ref={searchContainerRef}
+              className="hidden lg:block relative flex-1 max-w-[686px] mx-4"
+            >
+              <div className="relative">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  placeholder="Поиск по сайту"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  onFocus={() => query.trim() !== '' && setDropdownOpen(true)}
+                  className="w-full h-[50px] px-5 rounded-full border border-[#e5e9ec] focus:outline-none focus:ring-2 focus:ring-[#213F74] focus:border-transparent transition-all"
+                />
+                <button
+                  onClick={handleSearch}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#213F74] hover:text-[#002D79] transition-colors"
                 >
-                  <path
-                    d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
-                    stroke="#213F74"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M21.0004 21L16.6504 16.65"
-                    stroke="#213F74"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M21.0004 21L16.6504 16.65"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+              
+              {/* Выпадающий список для десктопа */}
+              <AnimatePresence>
+                {dropdownOpen && window.innerWidth >= 1024 && renderSearchDropdown()}
+              </AnimatePresence>
             </div>
 
-            {/* Мобильный поиск (появляется при нажатии на иконку) */}
+            {/* Мобильный поиск (полноэкранный оверлей) */}
             <AnimatePresence>
               {isSearchVisible && (
                 <motion.div
-                  className="lg:hidden absolute top-0 left-0 right-0 bg-white z-40 px-4 py-3 shadow-md"
-                  initial={{ y: -100, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -100, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  className="lg:hidden fixed inset-0 bg-white z-50"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                 >
-                  <div className="relative">
-                    <input
-                      ref={inputRef}
-                      type="text"
-                      placeholder="Поиск по сайту"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      className="w-full h-[45px] px-4 pr-12 rounded-full border border-[#e5e9ec] focus:outline-none"
-                    />
-                    <button
-                      onClick={() => {
-                        handleSearch();
-                        setIsSearchVisible(false);
-                      }}
-                      className="absolute right-3 top-1/2 -translate-y-1/2"
-                    >
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                  <div className="p-4 border-b border-gray-200">
+                    <div className="flex items-center">
+                      <button
+                        onClick={toggleSearch}
+                        className="mr-3 p-2 hover:bg-gray-100 rounded-full"
                       >
-                        <path
-                          d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
-                          stroke="#213F74"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M19 12H5"
+                            stroke="#213F74"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M12 19L5 12L12 5"
+                            stroke="#213F74"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                      <div ref={searchContainerRef} className="flex-1">
+                        <input
+                          ref={inputRef}
+                          type="text"
+                          placeholder="Поиск по сайту"
+                          value={query}
+                          onChange={(e) => setQuery(e.target.value)}
+                          onKeyPress={handleKeyPress}
+                          className="w-full h-[50px] px-4 rounded-lg border border-[#e5e9ec] focus:outline-none focus:ring-2 focus:ring-[#213F74] focus:border-transparent"
+                          autoFocus
                         />
-                        <path
-                          d="M21.0004 21L16.6504 16.65"
-                          stroke="#213F74"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
+                      </div>
+                    </div>
                   </div>
+                  
+                  {/* Выпадающий список для мобилки */}
+                  <AnimatePresence>
+                    {dropdownOpen && window.innerWidth < 1024 && (
+                      <div className="absolute inset-x-0 top-[73px] bottom-0 bg-white overflow-y-auto">
+                        {renderSearchDropdown()}
+                      </div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               )}
             </AnimatePresence>
-
-            {/* Выпадающий список поиска (для десктопа) */}
-            <div
-              ref={dropdownRef}
-              className={`absolute top-[55px] left-1/2 transform -translate-x-1/2 w-[686px] max-h-[390px] overflow-y-auto bg-white shadow-2xl rounded-lg transition-all duration-300 ease-in-out z-50 ${
-                dropdownOpen && window.innerWidth >= 1024
-                  ? "opacity-100 visible translate-y-0"
-                  : "opacity-0 invisible -translate-y-2"
-              }`}
-              style={{
-                scrollbarWidth: "thin",
-                scrollbarColor: "#cbd5e1 transparent",
-              }}
-            >
-              {results.length === 0 ? (
-                <div className="p-4 text-gray-500">Ничего не найдено</div>
-              ) : (
-                results.map((product) => (
-                  <Link
-                    key={product.id}
-                    to={`/product/${product.id}`}
-                    className="block px-4 py-3 hover:bg-gray-100 transition"
-                    onClick={() => setDropdownOpen(false)}
-                  >
-                    <div className="flex justify-between">
-                      <span>{product.name}</span>
-                      <span className="text-gray-600">{product.price}</span>
-                    </div>
-                  </Link>
-                ))
-              )}
-              {results.length > 0 && (
-                <div className="p-4 border-t border-gray-200">
-                  <button
-                    onClick={handleSearch}
-                    className="w-full py-2 bg-[#213F74] text-white rounded-full hover:bg-[#002D79] transition"
-                  >
-                    Все результаты
-                  </button>
-                </div>
-              )}
-            </div>
 
             {/* Иконки для мобильной версии */}
             <div className="flex lg:hidden items-center space-x-3">
@@ -377,7 +493,7 @@ const Header = () => {
                 </svg>
               </button>
 
-              {/* Иконка личного кабинета - 3 */}
+              {/* Иконка личного кабинета */}
               <Link
                 to="/login"
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F3F5F7] hover:bg-[#E8ECF0] transition-colors"
@@ -407,7 +523,7 @@ const Header = () => {
                 </svg>
               </Link>
 
-              {/* Иконка корзины с количеством - 4 */}
+              {/* Иконка корзины с количеством */}
               <Link
                 to="/cart"
                 className="relative w-10 h-10 flex items-center justify-center rounded-full bg-[#F3F5F7] hover:bg-[#E8ECF0] transition-colors"
@@ -449,7 +565,7 @@ const Header = () => {
                 )}
               </Link>
 
-              {/* Иконка гамбургер меню в синем кружке - 5 */}
+              {/* Иконка гамбургер меню */}
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-[#213F74] hover:bg-[#002D79] transition-colors relative z-50"
@@ -502,12 +618,13 @@ const Header = () => {
             <Link
               to="#"
               onClick={() => setIsPopupOpen(true)}
-              className="hidden lg:flex justify-center items-center border-none rounded-[50px] text-[14px] text-[#fff] font-medium p-[14_28px] w-[170px] h-[50px] bg-[#213f74] hover:bg-[#c19999] cursor-pointer"
+              className="hidden lg:flex justify-center items-center border-none rounded-[50px] text-[14px] text-[#fff] font-medium p-[14_28px] w-[170px] h-[50px] bg-[#213f74] hover:bg-[#002D79] cursor-pointer transition-colors"
             >
               Заказать звонок
             </Link>
           </div>
         </div>
+        
         <div className="bg-[#213F74] w-full hidden lg:block">
           <div className="max-w-[1300px] mx-auto px-4 flex flex-row justify-between items-center w-full h-[48px]">
             <nav className="flex flex-row justify-between items-center">
@@ -515,7 +632,7 @@ const Header = () => {
                 {links2.map(({ id, link, href }) => (
                   <li
                     key={id}
-                    className="hover:m-0 hover:bg-[#c19999] pt-[12px] pb-[12px] pl-[15px] pr-[15px]"
+                    className="hover:m-0 hover:bg-[#002D79] pt-[12px] pb-[12px] pl-[15px] pr-[15px] transition-colors"
                   >
                     <Link
                       className="text-[15px] font-[500] text-[#FFF] no-underline"
@@ -678,6 +795,7 @@ const Header = () => {
                   </AnimatePresence>
                 </div>
 
+                {/* Остальное меню без изменений... */}
                 {/* Акции */}
                 <div className="mb-3">
                   <Link
@@ -733,7 +851,7 @@ const Header = () => {
                   </Link>
                 </div>
 
-                {/* Корзина (просто иконка + текст) */}
+                {/* Корзина */}
                 <div className="mb-4">
                   <Link
                     to="/cart"
@@ -821,7 +939,6 @@ const Header = () => {
                   >
                     +7 999 999-99-99
                   </a>
-                  {/* График работы (мелким шрифтом) */}
                   <div className="flex items-center">
                     <svg
                       className="mr-2"
@@ -841,18 +958,16 @@ const Header = () => {
 
                 {/* Кнопки в колонку */}
                 <div className="space-y-3">
-                  {/* Кнопка "Заказать звонок" */}
                   <button
                     onClick={() => {
                       setIsPopupOpen(true);
                       setMenuOpen(false);
                     }}
-                    className="w-full rounded-[50px] text-[14px] text-white font-medium py-3 bg-[#213f74] hover:bg-[#002D79] cursor-pointer"
+                    className="w-full rounded-[50px] text-[14px] text-white font-medium py-3 bg-[#213f74] hover:bg-[#002D79] cursor-pointer transition-colors"
                   >
                     Заказать звонок
                   </button>
 
-                  {/* Кнопка "Написать в WhatsApp" */}
                   <Link 
                     to="https://wa.me/79379676127" 
                     target="_blank"

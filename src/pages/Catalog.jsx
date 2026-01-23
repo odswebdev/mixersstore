@@ -532,25 +532,7 @@ const Catalog = () => {
     </motion.button>
   </div>
 
-  {/* Селектор количества товаров на странице */}
-  {sortedProducts.length > 6 && (
-    <div className="flex items-center gap-4 mt-6">
-      <span className="text-[#797d91] text-sm">Товаров на странице:</span>
-      <select
-        value={itemsPerPage}
-        onChange={(e) => {
-          setItemsPerPage(Number(e.target.value));
-          setCurrentPage(1); // Сбрасываем на первую страницу при изменении количества
-        }}
-        className="border border-[#DCDC] rounded-lg px-3 py-1 text-[#213F74] bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#213F74] focus:ring-opacity-50"
-      >
-        <option value={6}>6</option>
-        <option value={12}>12</option>
-        <option value={24}>24</option>
-        <option value={48}>48</option>
-      </select>
-    </div>
-  )}
+
 </div>
 
 
