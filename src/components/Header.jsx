@@ -3,7 +3,7 @@ import CartIcon from "../components/CartIcon";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { motion, AnimatePresence } from "framer-motion";
-import { products } from "../path/to/products"; // Импортируем реальные товары
+import { products } from "../data/products";
 
 const Header = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -20,7 +20,6 @@ const Header = () => {
   const [cartItemsCount, setCartItemsCount] = useState(3);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
 
-  // Используем реальные товары из импорта
   const availableProducts = products.filter(product => product.inStock === "В наличии");
 
   const links = [
