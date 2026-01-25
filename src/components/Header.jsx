@@ -47,7 +47,6 @@ const Header = () => {
   const searchContainerRef = useRef(null);
   const navigate = useNavigate();
 
-  // Блокировка скролла при открытом мобильном меню
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = "hidden";
@@ -60,7 +59,6 @@ const Header = () => {
     };
   }, [menuOpen]);
 
-  // Поиск товаров - только те, что есть в наличии
   useEffect(() => {
     if (query.trim() === "") {
       setResults([]);
@@ -68,19 +66,16 @@ const Header = () => {
       return;
     }
     
-    // Фильтрация товаров: только те, что есть в наличии
     const filtered = availableProducts.filter((p) =>
       p.name.toLowerCase().includes(query.toLowerCase()) ||
       p.category.toLowerCase().includes(query.toLowerCase())
     );
     
-    // Ограничиваем количество результатов для лучшего UX
     const limitedResults = filtered.slice(0, 8);
     setResults(limitedResults);
     setDropdownOpen(true);
   }, [query, availableProducts]);
 
-  // Закрытие выпадающего списка при клике вне поля
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -104,18 +99,15 @@ const Header = () => {
     };
   }, []);
 
-  // Обновление позиции выпадающего списка
   useEffect(() => {
     const updateDropdownPosition = () => {
       if (searchContainerRef.current && dropdownRef.current && dropdownOpen) {
         const searchRect = searchContainerRef.current.getBoundingClientRect();
         if (window.innerWidth >= 1024) {
-          // Десктоп: центрируем под полем поиска
           dropdownRef.current.style.left = `${searchRect.left}px`;
           dropdownRef.current.style.width = `${searchRect.width}px`;
           dropdownRef.current.style.top = `${searchRect.bottom + 5}px`;
         } else {
-          // Мобилка: полная ширина
           dropdownRef.current.style.left = "0";
           dropdownRef.current.style.width = "100%";
           dropdownRef.current.style.top = `${searchRect.bottom}px`;
@@ -217,11 +209,10 @@ const Header = () => {
     }, 3000);
   };
 
-  // Рендер выпадающего списка поиска
   const renderSearchDropdown = () => (
     <motion.div
       ref={dropdownRef}
-      className={`fixed lg:absolute bg-white shadow-2xl rounded-lg z-50 overflow-hidden border border-gray-200 ${
+      className={`fixed lg:absolute top-[2%] left-0 bg-white shadow-2xl rounded-lg z-50 overflow-hidden border border-gray-200 ${
         window.innerWidth < 1024 ? 'left-0 w-full' : ''
       }`}
       style={{
@@ -389,13 +380,11 @@ const Header = () => {
                 </button>
               </div>
               
-              {/* Выпадающий список для десктопа */}
               <AnimatePresence>
                 {dropdownOpen && window.innerWidth >= 1024 && renderSearchDropdown()}
               </AnimatePresence>
             </div>
 
-            {/* Мобильный поиск (полноэкранный оверлей) */}
             <AnimatePresence>
               {isSearchVisible && (
                 <motion.div
@@ -447,8 +436,7 @@ const Header = () => {
                       </div>
                     </div>
                   </div>
-                  
-                  {/* Выпадающий список для мобилки */}
+
                   <AnimatePresence>
                     {dropdownOpen && window.innerWidth < 1024 && (
                       <div className="absolute inset-x-0 top-[73px] bottom-0 bg-white overflow-y-auto">
@@ -460,9 +448,7 @@ const Header = () => {
               )}
             </AnimatePresence>
 
-            {/* Иконки для мобильной версии */}
             <div className="flex lg:hidden items-center space-x-3">
-              {/* Иконка поиска */}
               <button
                 onClick={toggleSearch}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F3F5F7] hover:bg-[#E8ECF0] transition-colors"
@@ -492,7 +478,6 @@ const Header = () => {
                 </svg>
               </button>
 
-              {/* Иконка личного кабинета */}
               <Link
                 to="/login"
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-[#F3F5F7] hover:bg-[#E8ECF0] transition-colors"
@@ -522,7 +507,6 @@ const Header = () => {
                 </svg>
               </Link>
 
-              {/* Иконка корзины с количеством */}
               <Link
                 to="/cart"
                 className="relative w-10 h-10 flex items-center justify-center rounded-full bg-[#F3F5F7] hover:bg-[#E8ECF0] transition-colors"
@@ -564,7 +548,6 @@ const Header = () => {
                 )}
               </Link>
 
-              {/* Иконка гамбургер меню */}
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-[#213F74] hover:bg-[#002D79] transition-colors relative z-50"
@@ -590,7 +573,6 @@ const Header = () => {
               </button>
             </div>
 
-            {/* Десктопная версия: контакты и кнопка */}
             <div className="hidden lg:flex flex-col items-end justify-end">
               <span className="text-[22px] text-[#213F74] font-[600] text-right">
                 <a className="no-underline" href="tel:+79999999999">
@@ -651,7 +633,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Затемненный фон при открытом мобильном меню */}
       {menuOpen && (
         <div 
           className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -659,7 +640,6 @@ const Header = () => {
         />
       )}
 
-      {/* Выпадающее меню (мобилка) - СПРАВА */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -670,7 +650,6 @@ const Header = () => {
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
             <div className="p-6 flex flex-col h-full">
-              {/* Верхняя строка: логотип слева, кнопка закрытия справа */}
               <div className="flex items-center justify-between mb-8">
                 <Link to="/" onClick={() => setMenuOpen(false)}>
                   <img className="w-32" src={logo} alt="Логотип" />
@@ -705,9 +684,7 @@ const Header = () => {
                 </button>
               </div>
 
-              {/* Основное меню */}
               <nav className="flex-1">
-                {/* Каталог с выпадающим меню */}
                 <div className="mb-4">
                   <button
                     onClick={() => setIsCatalogOpen(!isCatalogOpen)}
@@ -732,7 +709,6 @@ const Header = () => {
                     </svg>
                   </button>
                   
-                  {/* Выпадающие подкатегории */}
                   <AnimatePresence>
                     {isCatalogOpen && (
                       <motion.div
@@ -794,8 +770,6 @@ const Header = () => {
                   </AnimatePresence>
                 </div>
 
-                {/* Остальное меню без изменений... */}
-                {/* Акции */}
                 <div className="mb-3">
                   <Link
                     to="/promotions"
@@ -806,7 +780,6 @@ const Header = () => {
                   </Link>
                 </div>
 
-                {/* О компании */}
                 <div className="mb-3">
                   <Link
                     to="/about"
@@ -817,7 +790,6 @@ const Header = () => {
                   </Link>
                 </div>
 
-                {/* Оплата и доставка */}
                 <div className="mb-3">
                   <Link
                     to="/paydelivery"
@@ -828,7 +800,6 @@ const Header = () => {
                   </Link>
                 </div>
 
-                {/* Магазины */}
                 <div className="mb-3">
                   <Link
                     to="/stores"
@@ -839,7 +810,6 @@ const Header = () => {
                   </Link>
                 </div>
 
-                {/* Контакты */}
                 <div className="mb-6">
                   <Link
                     to="/contacts"
@@ -850,7 +820,6 @@ const Header = () => {
                   </Link>
                 </div>
 
-                {/* Корзина */}
                 <div className="mb-4">
                   <Link
                     to="/cart"
@@ -892,7 +861,6 @@ const Header = () => {
                   </Link>
                 </div>
 
-                {/* Личный кабинет */}
                 <div className="mb-8">
                   <Link
                     to="/login"
@@ -927,10 +895,8 @@ const Header = () => {
                   </Link>
                 </div>
               </nav>
-
-              {/* Нижняя часть с контактами и кнопками */}
+              
               <div className="pt-6 border-t border-gray-200 mt-auto">
-                {/* Телефон */}
                 <div className="mb-4">
                   <a 
                     href="tel:+79999999999" 
@@ -955,7 +921,6 @@ const Header = () => {
                   </div>
                 </div>
 
-                {/* Кнопки в колонку */}
                 <div className="space-y-3">
                   <button
                     onClick={() => {
@@ -1004,7 +969,6 @@ const Header = () => {
         )}
       </AnimatePresence>
 
-      {/* Popup */}
       <AnimatePresence>
         {isPopupOpen && (
           <motion.div
