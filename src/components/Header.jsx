@@ -66,14 +66,27 @@ const Header = () => {
       return;
     }
     
+    // Фильтрация товаров с удалением дубликатов по id
     const filtered = availableProducts.filter((p) =>
       p.name.toLowerCase().includes(query.toLowerCase()) ||
       p.category.toLowerCase().includes(query.toLowerCase())
     );
     
-    const limitedResults = filtered.slice(0, 8);
+    // Удаление дубликатов - оставляем только первый уникальный товар по id
+    const uniqueProducts = [];
+    const seenIds = new Set();
+    
+    for (const product of filtered) {
+      if (!seenIds.has(product.id)) {
+        seenIds.add(product.id);
+        uniqueProducts.push(product);
+      }
+    }
+    
+    // Ограничение результатов
+    const limitedResults = uniqueProducts.slice(0, 8);
     setResults(limitedResults);
-    setDropdownOpen(true);
+    setDropdownOpen(limitedResults.length > 0 || query.trim() !== '');
   }, [query, availableProducts]);
 
   useEffect(() => {
@@ -99,19 +112,20 @@ const Header = () => {
     };
   }, []);
 
+  // Упрощенная позиция дропдауна - всегда под полем поиска
   useEffect(() => {
     const updateDropdownPosition = () => {
       if (searchContainerRef.current && dropdownRef.current && dropdownOpen) {
         const searchRect = searchContainerRef.current.getBoundingClientRect();
-        if (window.innerWidth >= 1024) {
-          dropdownRef.current.style.left = `${searchRect.left}px`;
-          dropdownRef.current.style.width = `${searchRect.width}px`;
-          dropdownRef.current.style.top = `${searchRect.bottom + 5}px`;
-        } else {
-          dropdownRef.current.style.left = "0";
-          dropdownRef.current.style.width = "100%";
-          dropdownRef.current.style.top = `${searchRect.bottom}px`;
-        }
+        const containerRect = searchContainerRef.current.parentElement.getBoundingClientRect();
+        
+        // Для всех разрешений - позиционируем относительно контейнера поиска
+        dropdownRef.current.style.position = 'absolute';
+        dropdownRef.current.style.left = '0';
+        dropdownRef.current.style.right = '0';
+        dropdownRef.current.style.width = '100%';
+        dropdownRef.current.style.top = '100%';
+        dropdownRef.current.style.marginTop = '5px';
       }
     };
 
@@ -212,18 +226,17 @@ const Header = () => {
   const renderSearchDropdown = () => (
     <motion.div
       ref={dropdownRef}
-      className={`fixed lg:absolute top-[2%] left-0 bg-white shadow-2xl rounded-lg z-50 overflow-hidden border border-gray-200 ${
-        window.innerWidth < 1024 ? 'left-0 w-full' : ''
-      }`}
+      className="absolute left-0 right-0 w-full bg-white shadow-2xl rounded-lg z-50 overflow-hidden border border-gray-200"
       style={{
         maxHeight: '400px',
         overflowY: 'auto',
         scrollbarWidth: 'thin',
         scrollbarColor: '#cbd5e1 transparent',
       }}
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
+      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
     >
       {results.length === 0 && query.trim() !== '' ? (
         <div className="p-4 text-gray-500 text-center">
@@ -262,6 +275,69 @@ const Header = () => {
           
           {results.length > 0 && (
             <div className="p-4 border-t border-gray-200 bg-gray-50">
+              <button
+                onClick={handleSearch}
+                className="w-full py-3 bg-[#213F74] text-white rounded-lg hover:bg-[#002D79] transition-colors font-medium"
+              >
+                Показать все результаты ({results.length})
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </motion.div>
+  );
+
+  const renderMobileSearchDropdown = () => (
+    <motion.div
+      ref={dropdownRef}
+      className="absolute left-0 right-0 w-full bg-white shadow-lg z-40 overflow-hidden border border-gray-200"
+      style={{
+        maxHeight: 'calc(100vh - 73px)',
+        overflowY: 'auto',
+      }}
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.2 }}
+    >
+      {results.length === 0 && query.trim() !== '' ? (
+        <div className="p-4 text-gray-500 text-center">
+          Ничего не найдено
+        </div>
+      ) : (
+        <>
+          {results.map((product) => (
+            <button
+              key={product.id}
+              onClick={() => handleProductClick(product.slug)}
+              className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+            >
+              <div className="flex justify-between items-center">
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-gray-900 truncate">
+                    {product.name}
+                  </div>
+                  <div className="text-sm text-gray-500 truncate">
+                    {product.category}
+                  </div>
+                </div>
+                <div className="ml-3 flex-shrink-0">
+                  <div className="font-semibold text-gray-900">
+                    {formatPrice(product.price)}
+                  </div>
+                  {product.oldPrice && (
+                    <div className="text-sm text-gray-400 line-through">
+                      {formatPrice(product.oldPrice)}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </button>
+          ))}
+          
+          {results.length > 0 && (
+            <div className="p-4 border-t border-gray-200 bg-gray-50 sticky bottom-0">
               <button
                 onClick={handleSearch}
                 className="w-full py-3 bg-[#213F74] text-white rounded-lg hover:bg-[#002D79] transition-colors font-medium"
@@ -385,6 +461,7 @@ const Header = () => {
               </AnimatePresence>
             </div>
 
+            {/* Мобильный поиск */}
             <AnimatePresence>
               {isSearchVisible && (
                 <motion.div
@@ -392,6 +469,7 @@ const Header = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
                 >
                   <div className="p-4 border-b border-gray-200">
                     <div className="flex items-center">
@@ -422,7 +500,7 @@ const Header = () => {
                           />
                         </svg>
                       </button>
-                      <div ref={searchContainerRef} className="flex-1">
+                      <div className="flex-1 relative" ref={searchContainerRef}>
                         <input
                           ref={inputRef}
                           type="text"
@@ -433,21 +511,21 @@ const Header = () => {
                           className="w-full h-[50px] px-4 rounded-lg border border-[#e5e9ec] focus:outline-none focus:ring-2 focus:ring-[#213F74] focus:border-transparent"
                           autoFocus
                         />
+                        <AnimatePresence>
+                          {dropdownOpen && window.innerWidth < 1024 && (
+                            <div className="absolute left-0 right-0 top-full mt-1">
+                              {renderMobileSearchDropdown()}
+                            </div>
+                          )}
+                        </AnimatePresence>
                       </div>
                     </div>
                   </div>
-
-                  <AnimatePresence>
-                    {dropdownOpen && window.innerWidth < 1024 && (
-                      <div className="absolute inset-x-0 top-[73px] bottom-0 bg-white overflow-y-auto">
-                        {renderSearchDropdown()}
-                      </div>
-                    )}
-                  </AnimatePresence>
                 </motion.div>
               )}
             </AnimatePresence>
 
+            {/* Мобильные иконки */}
             <div className="flex lg:hidden items-center space-x-3">
               <button
                 onClick={toggleSearch}
@@ -573,6 +651,7 @@ const Header = () => {
               </button>
             </div>
 
+            {/* Десктопный контакт и кнопка */}
             <div className="hidden lg:flex flex-col items-end justify-end">
               <span className="text-[22px] text-[#213F74] font-[600] text-right">
                 <a className="no-underline" href="tel:+79999999999">
@@ -606,6 +685,7 @@ const Header = () => {
           </div>
         </div>
         
+        {/* Нижняя синяя панель */}
         <div className="bg-[#213F74] w-full hidden lg:block">
           <div className="max-w-[1300px] mx-auto px-4 flex flex-row justify-between items-center w-full h-[48px]">
             <nav className="flex flex-row justify-between items-center">
@@ -633,6 +713,7 @@ const Header = () => {
         </div>
       </div>
 
+      {/* Мобильное меню */}
       {menuOpen && (
         <div 
           className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -969,6 +1050,7 @@ const Header = () => {
         )}
       </AnimatePresence>
 
+      {/* Попап обратного звонка */}
       <AnimatePresence>
         {isPopupOpen && (
           <motion.div
