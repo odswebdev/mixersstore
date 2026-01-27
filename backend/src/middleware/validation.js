@@ -1,0 +1,53 @@
+const validate = (schema) => {
+    return (req, res, next) => {
+      const errors = [];
+      
+      for (const [field, rules] of Object.entries(schema)) {
+        const value = req.body[field];
+        
+        // Check required fields
+        if (rules.required && (value === undefined || value === null || value === '')) {
+          errors.push(`${field} is required`);
+          continue;
+        }
+        
+        // Skip validation if value is not provided and field is not required
+        if (value === undefined || value === null) continue;
+        
+        // Type validation
+        if (rules.type === 'string' && typeof value !== 'string') {
+          errors.push(`${field} must be a string`);
+        } else if (rules.type === 'number' && typeof value !== 'number') {
+          errors.push(`${field} must be a number`);
+        }
+        
+        // Length validation
+        if (rules.maxLength && value.length > rules.maxLength) {
+          errors.push(`${field} must be less than ${rules.maxLength} characters`);
+        }
+        
+        if (rules.minLength && value.length < rules.minLength) {
+          errors.push(`${field} must be at least ${rules.minLength} characters`);
+        }
+        
+        // Numeric validation
+        if (rules.type === 'number') {
+          if (rules.min !== undefined && value < rules.min) {
+            errors.push(`${field} must be at least ${rules.min}`);
+          }
+          
+          if (rules.max !== undefined && value > rules.max) {
+            errors.push(`${field} must be at most ${rules.max}`);
+          }
+        }
+      }
+      
+      if (errors.length > 0) {
+        return res.status(400).json({ errors });
+      }
+      
+      next();
+    };
+  };
+  
+  module.exports = validate;
