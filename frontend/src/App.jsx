@@ -21,9 +21,16 @@ import NotFound from "./pages/NotFound";
 import CategoryPage from "./pages/CategoryPage";
 import SearchPage from "./pages/SearchPage";
 import PaymentDelivery from "./pages/PaymentDelivery";
+import { BrowserRouter as Router, Navigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+
+// Контекст и компоненты
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
+  <AnimatePresence mode="wait">
     <Routes>
       <Route path="/login" element={<AccountPage />} />
       <Route path="/" element={<Home />} />
@@ -70,6 +77,7 @@ function App() {
       />
       <Route path="*" element={<NotFound />} />
     </Routes>
+    </AnimatePresence>
   );
 }
 

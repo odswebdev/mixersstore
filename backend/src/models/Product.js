@@ -1,4 +1,4 @@
-const db = require('../config/database');
+/*const db = require('../config/database');
 
 class Product {
   static async findAll(filters = {}) {
@@ -175,4 +175,175 @@ class Product {
   }
 }
 
-module.exports = Product;
+module.exports = Product; */
+
+module.exports = (sequelize, DataTypes) => {
+  const Product = sequelize.define('Product', {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    slug: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    price: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      validate: {
+        min: 0
+      }
+    },
+    oldPrice: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true
+    },
+    articleNumber: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    sku: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true
+    },
+    images: {
+      type: DataTypes.JSON,
+      allowNull: true,
+      defaultValue: []
+    },
+    mainImage: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    inStock: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
+    stockStatus: {
+      type: DataTypes.ENUM('В наличии', 'Нет в наличии', 'Под заказ'),
+      defaultValue: 'В наличии'
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    style: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    color: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    view: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    mountingType: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    management: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    numberSource: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    collection: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    labels: {
+      type: DataTypes.JSON,
+      defaultValue: []
+    },
+    specifications: {
+      type: DataTypes.JSON,
+      allowNull: true
+    },
+    features: {
+      type: DataTypes.JSON,
+      allowNull: true
+    },
+    rating: {
+      type: DataTypes.DECIMAL(3, 2),
+      defaultValue: 0,
+      validate: {
+        min: 0,
+        max: 5
+      }
+    },
+    reviewCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    isFeatured: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    },
+    metaTitle: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    metaDescription: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    metaKeywords: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    }
+  }, {
+    tableName: 'products',
+    timestamps: true,
+    underscored: false,
+    indexes: [
+      {
+        fields: ['name']
+      },
+      {
+        fields: ['slug']
+      },
+      {
+        fields: ['articleNumber']
+      },
+      {
+        fields: ['price']
+      },
+      {
+        fields: ['categoryId']
+      }
+    ]
+  });
+
+  Product.associate = function(models) {
+    Product.belongsTo(models.Category, {
+      foreignKey: 'categoryId',
+      as: 'category'
+    });
+    
+    Product.hasMany(models.OrderItem, {
+      foreignKey: 'productId',
+      as: 'orderItems'
+    });
+  };
+
+  return Product;
+};

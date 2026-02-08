@@ -15,7 +15,7 @@ import "swiper/css/navigation";
 import "swiper/css/zoom";
 import "swiper/css/free-mode";
 import { products } from "../data/products";
-import { useCart } from "../context/CartContext.jsx";
+import { useCart } from "../contexts/CartContext.jsx";
 
 const ProductDetail = () => {
   const { slug } = useParams();

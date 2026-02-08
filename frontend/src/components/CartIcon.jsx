@@ -1,4 +1,4 @@
-import { useCart } from "../context/CartContext.jsx";
+import { useCart } from "../contexts/CartContext.jsx";
 import { Link } from "react-router-dom";
 
 const CartIcon = () => {

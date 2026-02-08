@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCart } from "../context/CartContext.jsx";
+import { useCart } from "../contexts/CartContext.jsx";
 import SidebarCatalog from "../components/SidebarCatalog";
 import Breadcrumb from "../components/Breadcrumb";
 import Header from "../components/Header";
