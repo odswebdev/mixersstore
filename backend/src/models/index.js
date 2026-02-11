@@ -3,16 +3,49 @@ const path = require('path');
 const { Sequelize, DataTypes } = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/database.js')[env];
-const db = {};
 
+// Импортируем конфигурацию из database.js правильно
+const databaseConfig = require('../config/database.js');
+const env = process.env.NODE_ENV || 'development';
+
+// Получаем правильную конфигурацию
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+
+if (databaseConfig.sequelize) {
+  // Если database.js уже создал экземпляр Sequelize
+  sequelize = databaseConfig.sequelize;
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  // Если database.js экспортирует конфигурацию
+  const config = databaseConfig.config || databaseConfig;
+  
+  // Для разных окружений
+  let dbConfig;
+  if (config[env]) {
+    dbConfig = config[env];
+  } else {
+    dbConfig = config;
+  }
+
+  if (dbConfig.use_env_variable) {
+    sequelize = new Sequelize(process.env[dbConfig.use_env_variable], dbConfig);
+  } else {
+    sequelize = new Sequelize(
+      dbConfig.database,
+      dbConfig.username,
+      dbConfig.password,
+      {
+        host: dbConfig.host,
+        port: dbConfig.port,
+        dialect: dbConfig.dialect,
+        dialectOptions: dbConfig.dialectOptions,
+        logging: dbConfig.logging,
+        pool: dbConfig.pool
+      }
+    );
+  }
 }
+
+const db = {};
 
 // Импортируем все модели из папки models
 fs.readdirSync(__dirname)

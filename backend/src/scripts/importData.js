@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const db = require('../config/database');
+const db = require('../config/database.cjs');
 
 // Чтение вашего файла products.js и преобразование данных
 const productsData = require('./products-data.json'); // Сохраните ваши данные в JSON

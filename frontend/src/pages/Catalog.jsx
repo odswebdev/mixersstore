@@ -424,7 +424,7 @@ const Catalog = () => {
                             </div>
                             
                             <div className="collection__title text-[12px] md:text-[14px] text-[#4d526c] mb-4 md:mb-6">
-                              Коллекция: ERYOS
+                              Коллекция: {product.collection || 'Demm'}
                             </div>
                             
                             <div className="price flex items-center gap-2 mb-3 md:mb-4">

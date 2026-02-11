@@ -1,0 +1,29 @@
+{
+    "name": "mixersstore-backend",
+    "version": "1.0.0",
+    "private": true,
+    "type": "commonjs",
+    "scripts": {
+      "start": "node src/server.js",
+      "dev": "nodemon src/server.js",
+      "seed": "node src/seeds/seed.js",
+      "seed:dev": "cross-env NODE_ENV=development node src/seeds/seed.js",
+      "db:reset": "node src/scripts/reset-db.js",
+      "db:reset:seed": "npm run db:reset && npm run seed"
+    },
+    "dependencies": {
+      "bcryptjs": "^3.0.3",
+      "dotenv": "^17.2.4",
+      "pg": "^8.18.0",
+      "sequelize": "^6.37.7",
+      "slugify": "^1.6.6",
+      "cors": "^2.8.5",
+      "express": "^4.18.2",
+      "jsonwebtoken": "^9.0.2"
+    },
+    "devDependencies": {
+      "@faker-js/faker": "^10.3.0",
+      "cross-env": "^7.0.3",
+      "nodemon": "^3.0.1"
+    }
+  }

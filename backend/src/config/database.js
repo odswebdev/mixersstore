@@ -107,7 +107,7 @@ if (isVercel) {
 } else {
   // Локальная разработка или не Vercel окружение
   config = {
-    database: process.env.DB_NAME || 'ecommerce_dev',
+    database: process.env.DB_NAME || 'demmstore',
     username: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || 'test2026',
     host: process.env.DB_HOST || 'localhost',
@@ -127,7 +127,7 @@ if (isVercel) {
 // Альтернативный подход с конфигурациями для разных окружений
 const configs = {
   development: {
-    database: process.env.DB_NAME || 'ecommerce_dev',
+    database: process.env.DB_NAME || 'demmstore',
     username: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || 'test2026',
     host: process.env.DB_HOST || 'localhost',
