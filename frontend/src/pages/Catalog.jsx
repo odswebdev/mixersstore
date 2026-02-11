@@ -58,7 +58,7 @@ const Catalog = () => {
 
   // Пагинация
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(6);
+  const [itemsPerPage, setItemsPerPage] = useState(11);
 
   // 🔹 Фильтрация товаров
   const filteredProducts = products.filter((p) => {

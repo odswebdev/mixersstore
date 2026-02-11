@@ -1,3 +1,4 @@
+import React from "react";
 import { useCart } from "../contexts/CartContext.jsx";
 import { Link } from "react-router-dom";
 

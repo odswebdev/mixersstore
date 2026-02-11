@@ -8,32 +8,35 @@ const validate = require('../middleware/validation');
 const productSchema = {
   name: { type: 'string', required: true, maxLength: 255 },
   slug: { type: 'string', required: true, maxLength: 255 },
-  category: { type: 'string', required: true, maxLength: 100 },
+  categoryId: { type: 'number', required: true },
   articleNumber: { type: 'string', required: true, maxLength: 50 },
   price: { type: 'number', required: true, min: 0 },
   oldPrice: { type: 'number', min: 0 }
 };
 
-// Public routes
-router.get('/', productController.getAllProducts);
-router.get('/categories', productController.getCategories);
-router.get('/search', productController.searchProducts);
-router.get('/slug/:slug', productController.getProductBySlug);
-router.get('/:id', productController.getProductById);
+// 🔹 ВАЖНО: Все маршруты начинаются с /products
+// Public routes - специфичные сначала
+router.get('/products', productController.getAllProducts);  // /api/products
+router.get('/products/featured', productController.getFeaturedProducts);
+router.get('/products/categories', productController.getCategories);
+router.get('/products/search', productController.searchProducts);
+router.get('/products/slug/:slug', productController.getProductBySlug);
+router.get('/products/:id/related', productController.getRelatedProducts);
+router.get('/products/:id', productController.getProductById);
 
-// Admin routes (protected - add auth middleware as needed)
-router.post('/', 
+// Admin routes
+router.post('/products', 
   upload.single('image'),
   validate(productSchema),
   productController.createProduct
 );
 
-router.put('/:id', 
+router.put('/products/:id', 
   upload.single('image'),
   validate(productSchema),
   productController.updateProduct
 );
 
-router.delete('/:id', productController.deleteProduct);
+router.delete('/products/:id', productController.deleteProduct);
 
 module.exports = router;

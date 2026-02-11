@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import CartIcon from "../components/CartIcon";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
@@ -20,7 +20,13 @@ const Header = () => {
   const [cartItemsCount, setCartItemsCount] = useState(3);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
 
-  const availableProducts = products.filter(product => product.inStock === "В наличии");
+  //const availableProducts = products.filter(product => product.inStock === "В наличии");
+
+    // ИСПРАВЛЕНИЕ: useMemo чтобы не создавать массив заново при каждом рендере
+    const availableProducts = useMemo(() => 
+      products.filter(product => product.inStock === "В наличии"),
+      [] // Пустой массив зависимостей - создается один раз
+    );
 
   const links = [
     { id: 1, link: "О компании", href: "/about" },

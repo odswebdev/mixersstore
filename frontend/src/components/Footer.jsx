@@ -182,30 +182,34 @@ const Footer = () => {
                 </div>
               </div>
 
-              {/* Колонка 4: КОНТАКТЫ */}
+              {/* Колонка 4: КОНТАКТЫ (ИСПРАВЛЕНО) */}
               <div className="flex flex-col w-[25%]">
-            <div className="border-t border-[#e5e9ec] pt-8">
-              <div className="text-[18px] font-[500] text-[#122952] mb-[20px]">
-                Узнавайте об акциях и новостях первыми, подпишитесь на рассылку
-              </div>
-              <div className="relative flex flex-row mb-[20px] max-w-[500px]">
-                <input
-                  className="z-3 email__t border border-solid border-[#e5e9ec] rounded-[46px] w-full h-[60px] bg-[#f3f5f7] pl-6 pr-40"
-                  type="text"
-                  name=""
-                  id=""
-                  placeholder="Электронная почта"
-                />
-                <button className="absolute z-10 right-[0px] w-[163px] h-[65px] bg-[#213f74] rounded-[50px] text-[14px] font-[500] text-[#FFF] border-none cursor-pointer hover:bg-[#172b58] transition-colors">
-                  Подписаться
-                </button>
-              </div>
-            </div>
-          </div>
-                <div className="flex flex-col gap-[15px] mb-8">
+                <div className="flex flex-col gap-[15px]">
+                  {/* Текст о рассылке */}
+                  <div className="text-[18px] font-[500] text-[#122952] mb-[10px]">
+                    Узнавайте об акциях и новостях первыми, подпишитесь на рассылку
+                  </div>
+                  
+                  {/* Форма подписки */}
+                  <div className="relative flex flex-row mb-[20px] max-w-[500px]">
+                    <input
+                      className="z-3 email__t border border-solid border-[#e5e9ec] rounded-[46px] w-full h-[60px] bg-[#f3f5f7] pl-6 pr-40"
+                      type="text"
+                      name=""
+                      id=""
+                      placeholder="Электронная почта"
+                    />
+                    <button className="absolute z-10 right-[0px] w-[163px] h-[65px] bg-[#213f74] rounded-[50px] text-[14px] font-[500] text-[#FFF] border-none cursor-pointer hover:bg-[#172b58] transition-colors">
+                      Подписаться
+                    </button>
+                  </div>
+                  
+                  {/* Телефон */}
                   <div className="text-[29px] text-[#213f74] font-[600]">
                     +7 999 999-99-99
                   </div>
+                  
+                  {/* Адрес */}
                   <div className="flex items-start">
                     <svg
                       className="mr-[8px] mt-1 flex-shrink-0"
@@ -235,7 +239,7 @@ const Footer = () => {
                 </div>
               </div>
             </div>
-
+          </div>
 
           {/* Мобильная версия (до 768px) - оставляем без изменений */}
           <div className="md:hidden">

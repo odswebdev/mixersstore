@@ -1,10 +1,11 @@
+import React from "react";
 import { useState } from "react";
 import { ChevronDown, ChevronRight, X, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
 import PriceRangeSlider from "../components/PriceRangeSlider";
 
 export default function SidebarCatalog({
-  products,
+  products = [], // Значение по умолчанию - пустой массив
   selectedCollections,
   setSelectedCollections,
   selectedStyles,
@@ -30,9 +31,14 @@ export default function SidebarCatalog({
   const [isNumberSourcesOpen, setIsNumberSourcesOpen] = useState(true);
   const [priceRange, setPriceRange] = useState([20000, 85000]);
 
-  // Динамически считаем количество
-  const collectionCounts = products.reduce((acc, p) => {
-    acc[p.collection] = (acc[p.collection] || 0) + 1;
+  // 🔹 БЕЗОПАСНАЯ проверка products
+  const safeProducts = Array.isArray(products) ? products : [];
+
+  // 🔹 Динамически считаем количество с защитой от null
+  const collectionCounts = safeProducts.reduce((acc, p) => {
+    if (p && p.collection) {
+      acc[p.collection] = (acc[p.collection] || 0) + 1;
+    }
     return acc;
   }, {});
 
@@ -41,15 +47,25 @@ export default function SidebarCatalog({
     count: collectionCounts[name],
   }));
 
-  const uniqueStyles = [...new Set(products.map((p) => p.style))];
-  const uniqueViews = [...new Set(products.map((p) => p.view))];
-  const uniqueColors = [...new Set(products.map((p) => p.color))];
-  const uniqueMountingTypes = [...new Set(products.map((p) => p.mountingType))];
-  const uniqueManagements = [...new Set(products.map((p) => p.management))];
-  const uniqueNumberSources = [...new Set(products.map((p) => p.numberSource))];
+  // 🔹 Безопасное получение уникальных значений
+  const getUniqueValues = (key) => {
+    return [...new Set(
+      safeProducts
+        .filter(p => p && p[key]) // Фильтруем null и undefined
+        .map(p => p[key])
+    )];
+  };
+
+  const uniqueStyles = getUniqueValues('style');
+  const uniqueViews = getUniqueValues('view');
+  const uniqueColors = getUniqueValues('color');
+  const uniqueMountingTypes = getUniqueValues('mountingType');
+  const uniqueManagements = getUniqueValues('management');
+  const uniqueNumberSources = getUniqueValues('numberSource');
 
   // Общие функции для переключения выбора
   const createToggleHandler = (setter) => (name) => {
+    if (!name) return; // Защита от null/undefined
     setter((prev) =>
       prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name]
     );
@@ -84,90 +100,98 @@ export default function SidebarCatalog({
     selectedNumberSources.length +
     (priceRange[0] !== 20000 || priceRange[1] !== 85000 ? 1 : 0);
 
-  // Компонент секции фильтра
+  // Компонент секции фильтра с защитой от ошибок
   const FilterSection = ({ 
     title, 
     isOpen, 
     setIsOpen, 
-    items, 
-    selectedItems, 
+    items = [], // Значение по умолчанию
+    selectedItems = [], // Значение по умолчанию
     toggleItem,
     showCount = false,
     isColorSection = false
-  }) => (
-    <div className="border-b border-gray-100 last:border-b-0">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full py-4 hover:bg-gray-50 transition-colors duration-200 rounded-lg px-1"
-      >
-        <div className="flex items-center gap-2">
-          <h3 className="text-base font-semibold text-gray-900">{title}</h3>
-          {selectedItems.length > 0 && (
-            <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full min-w-[20px] h-5 flex items-center justify-center">
-              {selectedItems.length}
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          {isOpen ? (
-            <ChevronDown className="w-5 h-5 text-gray-500 transition-transform duration-200" />
-          ) : (
-            <ChevronRight className="w-5 h-5 text-gray-500 transition-transform duration-200" />
-          )}
-        </div>
-      </button>
-      
-      <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
-        isOpen ? "max-h-[500px] opacity-100 mb-4" : "max-h-0 opacity-0"
-      }`}>
-        <div className="space-y-2 pb-2">
-          {items.map((item) => {
-            const name = item.name || item;
-            const count = item.count;
-            const isSelected = selectedItems.includes(name);
-            
-            return (
-              <button
-                key={name}
-                onClick={() => toggleItem(name)}
-                className={`flex items-center justify-between w-full p-3 rounded-lg transition-all duration-200 ${
-                  isSelected 
-                    ? "bg-blue-50 border border-blue-200" 
-                    : "hover:bg-gray-50 border border-transparent"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-4 h-4 border rounded-md flex items-center justify-center transition-colors ${
+  }) => {
+    // Безопасная проверка items
+    const safeItems = Array.isArray(items) ? items : [];
+    
+    return (
+      <div className="border-b border-gray-100 last:border-b-0">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center justify-between w-full py-4 hover:bg-gray-50 transition-colors duration-200 rounded-lg px-1"
+        >
+          <div className="flex items-center gap-2">
+            <h3 className="text-base font-semibold text-gray-900">{title}</h3>
+            {selectedItems.length > 0 && (
+              <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full min-w-[20px] h-5 flex items-center justify-center">
+                {selectedItems.length}
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {isOpen ? (
+              <ChevronDown className="w-5 h-5 text-gray-500 transition-transform duration-200" />
+            ) : (
+              <ChevronRight className="w-5 h-5 text-gray-500 transition-transform duration-200" />
+            )}
+          </div>
+        </button>
+        
+        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
+          isOpen ? "max-h-[500px] opacity-100 mb-4" : "max-h-0 opacity-0"
+        }`}>
+          <div className="space-y-2 pb-2">
+            {safeItems.map((item) => {
+              // Защита от null/undefined
+              if (!item) return null;
+              
+              const name = item.name || item;
+              const count = item.count;
+              const isSelected = selectedItems.includes(name);
+              
+              return (
+                <button
+                  key={name}
+                  onClick={() => toggleItem(name)}
+                  className={`flex items-center justify-between w-full p-3 rounded-lg transition-all duration-200 ${
                     isSelected 
-                      ? "bg-blue-600 border-blue-600" 
-                      : "bg-white border-gray-300 hover:border-blue-400"
-                  }`}>
-                    {isSelected && (
-                      <div className="w-2 h-2 bg-white rounded-sm" />
-                    )}
+                      ? "bg-blue-50 border border-blue-200" 
+                      : "hover:bg-gray-50 border border-transparent"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-4 h-4 border rounded-md flex items-center justify-center transition-colors ${
+                      isSelected 
+                        ? "bg-blue-600 border-blue-600" 
+                        : "bg-white border-gray-300 hover:border-blue-400"
+                    }`}>
+                      {isSelected && (
+                        <div className="w-2 h-2 bg-white rounded-sm" />
+                      )}
+                    </div>
+                    <span className={`text-sm font-medium ${
+                      isSelected ? "text-blue-700" : "text-gray-700"
+                    }`}>
+                      {name}
+                    </span>
                   </div>
-                  <span className={`text-sm font-medium ${
-                    isSelected ? "text-blue-700" : "text-gray-700"
-                  }`}>
-                    {name}
-                  </span>
-                </div>
-                {showCount && count !== undefined && (
-                  <span className={`text-xs px-2 py-1 rounded-full ${
-                    isSelected 
-                      ? "bg-blue-100 text-blue-700" 
-                      : "bg-gray-100 text-gray-600"
-                  }`}>
-                    {count}
-                  </span>
-                )}
-              </button>
-            );
-          })}
+                  {showCount && count !== undefined && (
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      isSelected 
+                        ? "bg-blue-100 text-blue-700" 
+                        : "bg-gray-100 text-gray-600"
+                    }`}>
+                      {count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <>
@@ -272,10 +296,6 @@ export default function SidebarCatalog({
           <h3 className="text-base font-semibold text-gray-900 mb-4">Цена, ₽</h3>
           <div className="px-1">
             <PriceRangeSlider priceRange={priceRange} setPriceRange={setPriceRange} />
-          </div>
-          <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
-            <span>от {priceRange[0].toLocaleString()} ₽</span>
-            <span>до {priceRange[1].toLocaleString()} ₽</span>
           </div>
         </div>
 
@@ -389,10 +409,6 @@ export default function SidebarCatalog({
                 <h3 className="text-base font-semibold text-gray-900 mb-4">Цена, ₽</h3>
                 <div className="px-1">
                   <PriceRangeSlider priceRange={priceRange} setPriceRange={setPriceRange} />
-                </div>
-                <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
-                  <span>от {priceRange[0].toLocaleString()} ₽</span>
-                  <span>до {priceRange[1].toLocaleString()} ₽</span>
                 </div>
               </div>
 
