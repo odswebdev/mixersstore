@@ -26,7 +26,6 @@ import { AnimatePresence } from 'framer-motion';
 
 // Контекст и компоненты
 import { AuthProvider } from './contexts/AuthContext';
-//import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
