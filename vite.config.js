@@ -4,8 +4,8 @@ import { resolve } from 'path'
 
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  base: '/mixersstore/',
-  root: resolve(__dirname, 'frontend'),
+  base: '/', // ИЗМЕНЕНО: для Vercel нужен корневой путь
+  root: resolve(__dirname), // ИЗМЕНЕНО: убираем 'frontend' (текущая папка и так frontend)
   server: {
     port: 5173,
     open: true,
@@ -16,14 +16,14 @@ export default defineConfig(({ mode }) => ({
       '/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
-        secure: false,
-        // Убираем rewrite, оставляем /api в пути
+        secure: false
       }
     }
   },
   build: {
     chunkSizeWarningLimit: 1000,
     outDir: 'dist',
-    emptyOutDir: true
+    emptyOutDir: true,
+    sourcemap: false // Добавлено для продакшена
   }
 }));
