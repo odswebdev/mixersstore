@@ -19,7 +19,7 @@ import aksessuaryCat from "../assets/aksessuary__cat.png";
 
 // Базовый URL для API - ИСПРАВЛЕНО!
 const API_BASE_URL = import.meta.env.PROD 
-  ? '/mixersstore/api' 
+  ? '/api' 
   : 'http://localhost:5000/api';
 
 const CategoryPage = ({ title, category }) => {
@@ -218,8 +218,8 @@ const CategoryPage = ({ title, category }) => {
         <div className="max-w-[1300px] mx-auto px-4">
           <Breadcrumb
             items={[
-              { label: "Главная", href: "/mixersstore/" },
-              { label: "Каталог", href: "/mixersstore/catalog" },
+              { label: "Главная", href: "/" },
+              { label: "Каталог", href: "/catalog" },
               { label: title },
             ]}
           />
@@ -315,7 +315,7 @@ const CategoryPage = ({ title, category }) => {
                         className="flex flex-col h-full bg-white rounded-[10px] p-[20px] shadow-[0px_5px_15px_rgba(0,0,0,0.05)] hover:shadow-[0px_10px_25px_rgba(0,0,0,0.1)] transition-shadow"
                       >
                         <Link 
-                          to={`/mixersstore/catalog/${product.slug}`} 
+                          to={`/catalog/${product.slug}`} 
                           className="flex flex-col h-full no-underline"
                         >
                           {/* Лейблы */}
@@ -344,12 +344,12 @@ const CategoryPage = ({ title, category }) => {
                           {/* Изображение */}
                           <div className="flex justify-center items-center mb-4 h-[180px]">
                             <img
-                              src={product.mainImage || product.image || '/mixersstore/default-product-image.png'}
+                              src={product.mainImage || product.image || '/default-product-image.png'}
                               alt={product.name}
                               className="max-w-full max-h-full object-contain"
                               loading="lazy"
                               onError={(e) => {
-                                e.target.src = '/mixersstore/default-product-image.png';
+                                e.target.src = '/default-product-image.png';
                               }}
                             />
                           </div>

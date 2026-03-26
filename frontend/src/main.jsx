@@ -6,13 +6,9 @@ import ScrollToTop from "./components/ScrollToTop";
 import App from "./App";
 import "./index.css";
 
-// Эти импорты скорее всего не нужны, удалите если файлов нет:
-// import "./libs/jquery.min.js";
-// import "./libs/swiper-bundle.min.js";
-
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter basename="/mixersstore">
+    <BrowserRouter> {/* Убрали basename="/mixersstore" */}
       <CartProvider>
         <ScrollToTop />
         <App />

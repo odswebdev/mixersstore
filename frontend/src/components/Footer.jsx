@@ -151,31 +151,31 @@ const Footer = () => {
                 <div className="flex flex-col gap-[15px]">
                   <a
                     className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
-                    href="/mixersstore/promotions"
+                    href="/promotions"
                   >
                     Акции
                   </a>
                   <a
                     className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
-                    href="/mixersstore/about"
+                    href="/about"
                   >
                     О компании
                   </a>
                   <a
                     className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
-                    href="/mixersstore/paydelivery"
+                    href="/paydelivery"
                   >
                     Оплата и доставка
                   </a>
                   <a
                     className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
-                    href="/mixersstore/stores"
+                    href="/stores"
                   >
                     Магазины
                   </a>
                   <a
                     className="text-[15px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
-                    href="/mixersstore/contacts"
+                    href="/contacts"
                   >
                     Контакты
                   </a>
@@ -302,31 +302,31 @@ const Footer = () => {
                 <div className="flex flex-col gap-[12px]">
                   <a
                     className="text-[14px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
-                    href="/mixersstore/promotions"
+                    href="/promotions"
                   >
                     Акции
                   </a>
                   <a
                     className="text-[14px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
-                    href="/mixersstore/about"
+                    href="/about"
                   >
                     О компании
                   </a>
                   <a
                     className="text-[14px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
-                    href="/mixersstore/paydelivery"
+                    href="/paydelivery"
                   >
                     Оплата и доставка
                   </a>
                   <a
                     className="text-[14px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
-                    href="/mixersstore/stores"
+                    href="/stores"
                   >
                     Магазины
                   </a>
                   <a
                     className="text-[14px] text-[rgba(0,_7,_45,_0.8)] no-underline hover:text-[#002D79]"
-                    href="/mixersstore/contacts"
+                    href="/contacts"
                   >
                     Контакты
                   </a>
@@ -427,7 +427,7 @@ const Footer = () => {
             </div>
             <div className="text-[15px] text-[#7F8295] w-[25%] text-center">
               <Link
-                to="/mixersstore/offer"
+                to="/offer"
                 className="text-[15px] text-[#7F8295] no-underline hover:text-[#213f74] transition-colors"
               >
                 Договор оферты
@@ -435,7 +435,7 @@ const Footer = () => {
             </div>
             <div className="text-[15px] text-[#7F8295] w-[25%] text-center">
               <Link
-                to="/mixersstore/soglasie"
+                to="/soglasie"
                 className="text-[15px] text-[#7F8295] no-underline hover:text-[#213f74] transition-colors"
               >
                 Пользовательское соглашение
@@ -443,7 +443,7 @@ const Footer = () => {
             </div>
             <div className="text-[15px] text-[#7F8295] w-[25%] text-right">
               <Link
-                to="/mixersstore/contacts"
+                to="/contacts"
                 className="text-[15px] text-[#7F8295] no-underline hover:text-[#213f74] transition-colors"
               >
                 Контакты
@@ -455,19 +455,19 @@ const Footer = () => {
           <div className="flex flex-col md:hidden py-4">
             <div className="flex flex-col gap-3 mb-4">
               <Link
-                to="/mixersstore/offer"
+                to="/offer"
                 className="text-[14px] text-[#7F8295] no-underline"
               >
                 Договор оферты
               </Link>
               <Link
-                to="/mixersstore/soglasie"
+                to="/soglasie"
                 className="text-[14px] text-[#7F8295] no-underline"
               >
                 Пользовательское соглашение
               </Link>
               <Link
-                to="/mixersstore/contacts"
+                to="/contacts"
                 className="text-[14px] text-[#7F8295] no-underline"
               >
                 Контакты
